@@ -22,11 +22,12 @@ const VotingPanel: React.FC = () => {
     }
 
     try {
-      await submitVote(currentPlayer.id, currentPlayer.name, suspectedName.trim());
+      await submitVote(currentPlayer.id, currentPlayer.name, suspectedName.trim()); // Pass currentPlayer.name as voterName
       setHasVoted(true);
       setSuspectedName('');
       toast.success('Your vote has been submitted! 🗳️');
     } catch (error) {
+      // console.error('Error submitting vote:', error); // Removed for linting
       toast.error('Failed to submit vote');
     }
   };

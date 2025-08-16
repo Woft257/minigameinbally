@@ -33,11 +33,27 @@ export const useFirebase = () => {
     );
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messagesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate()
-      })) as Message[];
+      const messagesData = snapshot.docs.map(doc => {
+        const rawTimestamp = doc.data().timestamp;
+        let parsedTimestamp: Date;
+
+        if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
+          // It's a Firestore Timestamp object
+          parsedTimestamp = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          // It's an ISO string
+          parsedTimestamp = new Date(rawTimestamp);
+        } else {
+          // Fallback for missing or unrecognised format
+          parsedTimestamp = new Date(); 
+        }
+
+        return {
+          id: doc.id,
+          ...doc.data(),
+          timestamp: parsedTimestamp
+        }
+      }) as Message[];
       setMessages(messagesData.reverse());
     });
 
@@ -66,11 +82,27 @@ export const useFirebase = () => {
       orderBy('createdAt', 'desc')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const hintsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()
-      })) as DailyHint[];
+      const hintsData = snapshot.docs.map(doc => {
+        const rawCreatedAt = doc.data().createdAt;
+        let parsedCreatedAt: Date;
+
+        if (rawCreatedAt && typeof rawCreatedAt.toDate === 'function') {
+          // It's a Firestore Timestamp object
+          parsedCreatedAt = rawCreatedAt.toDate();
+        } else if (typeof rawCreatedAt === 'string') {
+          // It's an ISO string
+          parsedCreatedAt = new Date(rawCreatedAt);
+        } else {
+          // Fallback for missing or unrecognised format
+          parsedCreatedAt = new Date(); 
+        }
+
+        return {
+          id: doc.id,
+          ...doc.data(),
+          createdAt: parsedCreatedAt
+        }
+      }) as DailyHint[];
       setDailyHints(hintsData);
     });
 
@@ -96,11 +128,27 @@ export const useFirebase = () => {
       orderBy('timestamp', 'desc')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const votesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate()
-      })) as Vote[];
+      const votesData = snapshot.docs.map(doc => {
+        const rawTimestamp = doc.data().timestamp;
+        let parsedTimestamp: Date;
+
+        if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
+          // It's a Firestore Timestamp object
+          parsedTimestamp = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          // It's an ISO string
+          parsedTimestamp = new Date(rawTimestamp);
+        } else {
+          // Fallback for missing or unrecognised format
+          parsedTimestamp = new Date(); 
+        }
+
+        return {
+          id: doc.id,
+          ...doc.data(),
+          timestamp: parsedTimestamp
+        }
+      }) as Vote[];
       setVotes(votesData);
     });
 
@@ -112,7 +160,7 @@ export const useFirebase = () => {
       playerId,
       playerName,
       content,
-      timestamp: new Date()
+      timestamp: new Date().toISOString() // Store as ISO string
     });
   };
 
@@ -130,7 +178,7 @@ export const useFirebase = () => {
     await addDoc(collection(db, 'dailyHints'), {
       content,
       imageUrl,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(), // Store as ISO string
       isActive: true
     });
   };
@@ -140,12 +188,12 @@ export const useFirebase = () => {
     await setDoc(gameStateDoc, newState, { merge: true });
   };
 
-  const submitVote = async (playerId: string, playerName: string, suspectedPersonName: string) => {
+  const submitVote = async (playerId: string, voterName: string, suspectedPersonName: string) => {
     await addDoc(collection(db, 'votes'), {
       playerId,
-      playerName,
+      voterName,
       suspectedPersonName,
-      timestamp: new Date()
+      timestamp: new Date().toISOString() // Store as ISO string
     });
   };
 
@@ -155,6 +203,10 @@ export const useFirebase = () => {
 
   const resetMysteryPerson = async () => {
     await updateGameState({ mysteryPersonId: null });
+  };
+
+  const revealMysteryPerson = async () => {
+    await updateGameState({ mysteryPersonRevealed: true });
   };
 
   return {
@@ -169,6 +221,7 @@ export const useFirebase = () => {
     updateGameState,
     submitVote,
     setMysteryPerson,
-    resetMysteryPerson
+    resetMysteryPerson,
+    revealMysteryPerson // Add the new function to the returned object
   };
 };

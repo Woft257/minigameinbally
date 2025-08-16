@@ -33,7 +33,7 @@ export interface MysteryPerson {
 export interface Vote {
   id: string;
   playerId: string;
-  playerName: string;
+  voterName: string; // Added voterName
   suspectedPersonName: string;
   timestamp: Date;
 }

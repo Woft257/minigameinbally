@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom'; // Import Link
-import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, UserCheck, UserX } from 'lucide-react';
+import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, UserCheck, UserX, Trophy } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 import toast from 'react-hot-toast';
 import ReactQuill from 'react-quill'; // Import ReactQuill
@@ -20,7 +20,8 @@ const AdminPanel: React.FC = () => {
     dailyHints,
     setMysteryPerson,
     resetMysteryPerson,
-    sendMessage // Import sendMessage
+    sendMessage, // Import sendMessage
+    revealMysteryPerson // Import revealMysteryPerson
   } = useFirebase();
 
   const mysteryPerson = useMemo(() => {
@@ -323,7 +324,7 @@ const AdminPanel: React.FC = () => {
               </div>
 
               {/* View Vote Results Button */}
-              <Link to="/admin/voteresult"> {/* Use Link for navigation */}
+              <Link to="/admin/vote-results"> {/* Use Link for navigation */}
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -335,6 +336,23 @@ const AdminPanel: React.FC = () => {
                   </div>
                 </motion.button>
               </Link>
+
+              {/* Publish Results Button */}
+              <motion.button
+                onClick={async () => {
+                  await revealMysteryPerson();
+                  await sendMessage('admin-system', 'Game Admin', 'The mystery person has been revealed! Check the results! 🏆');
+                  toast.success('Mystery person revealed!');
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-3 px-6 font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white"
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <Trophy className="w-4 h-4" />
+                  <span>Publish Results</span>
+                </div>
+              </motion.button>
             </div>
           </motion.div>
         </div>
