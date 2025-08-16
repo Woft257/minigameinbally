@@ -1,29 +1,71 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Globe, UserPlus, Waves } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Globe, UserPlus, Waves, Search, ChevronDown } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 import { usePlayer } from '../context/PlayerContext';
 import toast from 'react-hot-toast';
 
-const countries = [
-  'Vietnam', 'Singapore', 'Thailand', 'Indonesia', 'Malaysia', 
-  'Philippines', 'Cambodia', 'Laos', 'Myanmar', 'Brunei',
-  'China', 'Japan', 'South Korea', 'India', 'Australia',
-  'United States', 'United Kingdom', 'Canada', 'Germany', 'France'
-];
+const allCountries = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+  "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+  "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Brazzaville)", "Congo (Kinshasa)",
+  "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador",
+  "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
+  "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+  "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
+  "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan",
+  "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar",
+  "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia",
+  "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal",
+  "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan",
+  "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
+  "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa",
+  "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
+  "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+  "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
+  "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+].sort();
 
 const Login: React.FC = () => {
   const [name, setName] = useState('');
   const [country, setCountry] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { addPlayer, players } = useFirebase();
   const { setCurrentPlayer } = usePlayer();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const filteredCountries = useMemo(() => {
+    return allCountries.filter(c =>
+      c.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name.trim() || !country) {
       toast.error('Please enter your name and select your country');
+      return;
+    }
+
+    if (!allCountries.includes(country)) {
+      toast.error('Please select a valid country from the list.');
       return;
     }
 
@@ -136,27 +178,70 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-200 mb-2">
+            <div className="relative" ref={dropdownRef}>
+              <label htmlFor="country-input" className="block text-sm font-medium text-gray-200 mb-2">
                 Country
               </label>
               <div className="relative">
                 <Globe className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <select
-                  id="country"
+                <input
+                  type="text"
+                  id="country-input"
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 appearance-none"
+                  onChange={(e) => {
+                    setCountry(e.target.value);
+                    setSearchTerm(e.target.value);
+                    setIsDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsDropdownOpen(true)}
+                  placeholder="Search or select your country..."
+                  className="w-full pl-12 pr-10 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200"
                   required
-                >
-                  <option value="" className="bg-slate-800">Select your country</option>
-                  {countries.map((c) => (
-                    <option key={c} value={c} className="bg-slate-800">
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                />
+                <ChevronDown 
+                  className={`absolute right-3 top-3 w-5 h-5 text-gray-400 cursor-pointer transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                />
               </div>
+
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-20 w-full bg-slate-800 border border-white/20 rounded-xl mt-2 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+                  >
+                    <div className="p-2">
+                      <input
+                        type="text"
+                        placeholder="Search countries..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2"
+                      />
+                    </div>
+                    {filteredCountries.length > 0 ? (
+                      filteredCountries.map((c) => (
+                        <div
+                          key={c}
+                          className="px-4 py-2 text-gray-200 hover:bg-white/10 cursor-pointer transition-colors duration-150"
+                          onClick={() => {
+                            setCountry(c);
+                            setSearchTerm(c);
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          {c}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-gray-400 text-center">No countries found.</div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <motion.button
@@ -180,7 +265,7 @@ const Login: React.FC = () => {
           <div className="mt-6 pt-6 border-t border-white/10">
             <div className="flex items-center justify-between text-sm text-gray-400">
               <span>Players Online</span>
-              <span className="text-cyan-400 font-semibold">{players.length}/40</span>
+              <span className="text-cyan-400 font-semibold">{players.length}</span>
             </div>
           </div>
         </motion.div>

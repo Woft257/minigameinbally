@@ -1,16 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Waves, Users, Bell, LogOut } from 'lucide-react';
+import { Waves, Users, Bell } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useFirebase } from '../hooks/useFirebase';
 
 const GameHeader: React.FC = () => {
-  const { currentPlayer, setCurrentPlayer } = usePlayer();
+  const { currentPlayer } = usePlayer();
   const { players, dailyHints } = useFirebase();
-
-  const handleLogout = () => {
-    setCurrentPlayer(null);
-  };
 
   const latestHint = dailyHints.find(hint => hint.isActive);
 
@@ -48,26 +44,16 @@ const GameHeader: React.FC = () => {
             
             <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 rounded-lg">
               <Users className="w-4 h-4 text-cyan-400" />
-              <span className="text-white font-semibold">{players.length}/40</span>
+              <span className="text-white font-semibold">{players.length}</span>
             </div>
           </div>
 
-          {/* User Info and Logout */}
+          {/* User Info */}
           <div className="flex items-center space-x-4">
             <div className="text-right hidden sm:block">
               <p className="text-white font-semibold">{currentPlayer?.name}</p>
               <p className="text-gray-400 text-sm">{currentPlayer?.country}</p>
             </div>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              className="flex items-center justify-center w-10 h-10 bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 rounded-lg transition-colors duration-200"
-              title="Logout"
-            >
-              <LogOut className="w-4 h-4 text-red-400" />
-            </motion.button>
           </div>
         </div>
       </div>

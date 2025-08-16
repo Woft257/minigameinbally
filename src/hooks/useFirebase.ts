@@ -7,21 +7,21 @@ import {
   orderBy, 
   limit,
   doc,
-  updateDoc,
-  getDoc,
   setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { Message, DailyHint, Player, Vote, GameState, MysteryPerson } from '../types';
+import { Message, DailyHint, Player, Vote, GameState } from '../types';
 
 export const useFirebase = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [dailyHints, setDailyHints] = useState<DailyHint[]>([]);
+  const [votes, setVotes] = useState<Vote[]>([]);
   const [gameState, setGameState] = useState<GameState>({
     isVotingOpen: false,
     gameStarted: false,
-    mysteryPersonRevealed: false
+    mysteryPersonRevealed: false,
+    mysteryPersonId: null // Initialize mysteryPersonId
   });
 
   // Listen to messages
@@ -89,6 +89,24 @@ export const useFirebase = () => {
     return unsubscribe;
   }, []);
 
+  // Listen to votes
+  useEffect(() => {
+    const q = query(
+      collection(db, 'votes'),
+      orderBy('timestamp', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const votesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate()
+      })) as Vote[];
+      setVotes(votesData);
+    });
+
+    return unsubscribe;
+  }, []);
+
   const sendMessage = async (playerId: string, playerName: string, content: string) => {
     await addDoc(collection(db, 'messages'), {
       playerId,
@@ -108,7 +126,7 @@ export const useFirebase = () => {
     return docRef.id;
   };
 
-  const addDailyHint = async (content: string, imageUrl?: string) => {
+  const addDailyHint = async (content: string, imageUrl?: string | null) => {
     await addDoc(collection(db, 'dailyHints'), {
       content,
       imageUrl,
@@ -119,7 +137,7 @@ export const useFirebase = () => {
 
   const updateGameState = async (newState: Partial<GameState>) => {
     const gameStateDoc = doc(db, 'gameState', 'current');
-    await updateDoc(gameStateDoc, newState);
+    await setDoc(gameStateDoc, newState, { merge: true });
   };
 
   const submitVote = async (playerId: string, playerName: string, suspectedPersonName: string) => {
@@ -131,15 +149,26 @@ export const useFirebase = () => {
     });
   };
 
+  const setMysteryPerson = async (playerId: string) => {
+    await updateGameState({ mysteryPersonId: playerId });
+  };
+
+  const resetMysteryPerson = async () => {
+    await updateGameState({ mysteryPersonId: null });
+  };
+
   return {
     messages,
     players,
     dailyHints,
+    votes,
     gameState,
     sendMessage,
     addPlayer,
     addDailyHint,
     updateGameState,
-    submitVote
+    submitVote,
+    setMysteryPerson,
+    resetMysteryPerson
   };
 };

@@ -42,4 +42,5 @@ export interface GameState {
   isVotingOpen: boolean;
   gameStarted: boolean;
   mysteryPersonRevealed: boolean;
+  mysteryPersonId?: string | null; // ID of the selected mystery person
 }

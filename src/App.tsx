@@ -5,14 +5,18 @@ import { PlayerProvider, usePlayer } from './context/PlayerContext';
 import Login from './components/Login';
 import Game from './components/Game';
 import AdminPanel from './components/AdminPanel';
+import VoteResults from './components/VoteResults';
+import { useFirebase } from './hooks/useFirebase'; // Import useFirebase
 
 const AppContent: React.FC = () => {
   const { currentPlayer } = usePlayer();
+  const { votes } = useFirebase(); // Get votes from useFirebase
 
   return (
     <Router>
       <Routes>
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/admin/voteresult" element={<VoteResults votes={votes} />} /> {/* Pass votes to VoteResults */}
         <Route
           path="/game"
           element={currentPlayer ? <Game /> : <Navigate to="/" replace />}

@@ -1,3 +1,103 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for ReactQuill to match the theme */
+.quill-custom-theme .ql-toolbar {
+  background-color: rgba(255, 255, 255, 0.05); /* Lighter background for toolbar */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border */
+  border-bottom: none;
+  border-top-left-radius: 0.75rem; /* rounded-xl */
+  border-top-right-radius: 0.75rem; /* rounded-xl */
+  padding: 0.75rem; /* p-3 */
+}
+
+.quill-custom-theme .ql-container {
+  background-color: rgba(255, 255, 255, 0.05); /* Lighter background for editor area */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border */
+  border-bottom-left-radius: 0.75rem; /* rounded-xl */
+  border-bottom-right-radius: 0.75rem; /* rounded-xl */
+  min-height: 150px; /* Adjust as needed */
+}
+
+.quill-custom-theme .ql-editor {
+  color: #fff; /* White text for content */
+  padding: 1rem; /* p-4 */
+}
+
+.quill-custom-theme .ql-editor.ql-blank::before {
+  color: rgba(156, 163, 175, 0.6); /* placeholder-gray-400 with some transparency */
+  font-style: normal; /* Remove italic default */
+  left: 1rem; /* Align with padding */
+}
+
+/* Adjust toolbar button colors for better visibility */
+.quill-custom-theme .ql-toolbar button {
+  color: #fff; /* White icons */
+}
+
+.quill-custom-theme .ql-toolbar .ql-stroke {
+  stroke: #fff; /* White stroke for icons */
+}
+
+.quill-custom-theme .ql-toolbar .ql-fill {
+  fill: #fff; /* White fill for icons */
+}
+
+/* Active/selected state for toolbar buttons */
+.quill-custom-theme .ql-toolbar button.ql-active .ql-stroke,
+.quill-custom-theme .ql-toolbar button.ql-active .ql-fill,
+.quill-custom-theme .ql-toolbar .ql-active {
+  color: #facc15; /* yellow-400 */
+  stroke: #facc15; /* yellow-400 */
+  fill: #facc15; /* yellow-400 */
+}
+
+/* Dropdowns for headers/fonts */
+.quill-custom-theme .ql-picker {
+  color: #fff; /* White text for dropdowns */
+}
+
+.quill-custom-theme .ql-picker-label {
+  color: #fff; /* White text for dropdown labels */
+}
+
+.quill-custom-theme .ql-picker-options {
+  background-color: rgba(15, 23, 42, 0.9); /* slate-900 with transparency */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.quill-custom-theme .ql-picker-item.ql-selected,
+.quill-custom-theme .ql-picker-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #facc15; /* yellow-400 */
+}
+
+/* Link and Image input fields */
+.quill-custom-theme .ql-tooltip {
+  background-color: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.quill-custom-theme .ql-tooltip input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.quill-custom-theme .ql-tooltip a.ql-action,
+.quill-custom-theme .ql-tooltip a.ql-remove {
+  color: #facc15; /* yellow-400 */
+}
+
+/* Mobile responsiveness adjustments */
+@media (max-width: 640px) {
+  .quill-custom-theme .ql-toolbar {
+    padding: 0.5rem;
+  }
+  .quill-custom-theme .ql-editor {
+    padding: 0.75rem;
+  }
+}
