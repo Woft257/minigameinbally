@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb, X, Calendar, Eye } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Lightbulb, Calendar, Eye } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 
 const DailyHints: React.FC = () => {
   const [selectedHint, setSelectedHint] = useState<string | null>(null);
   const { dailyHints } = useFirebase();
 
-  const activeHints = dailyHints.filter(hint => hint.isActive);
+  const activeHints = dailyHints.filter(hint => hint.isActive).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Sort by creation date, newest first
 
   return (
     <div className="space-y-4">
@@ -39,10 +39,10 @@ const DailyHints: React.FC = () => {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-yellow-500/20 rounded-lg">
-                    <span className="text-yellow-400 font-bold text-sm">#{index + 1}</span>
+                    <span className="text-yellow-400 font-bold text-sm">#{activeHints.length - index}</span> {/* Adjust index for reverse numbering */}
                   </div>
                   <div>
-                    <p className="text-white font-semibold">Hint #{index + 1}</p>
+                    <p className="text-white font-semibold">Hint #{activeHints.length - index}</p>
                     <div className="flex items-center space-x-2 text-xs text-gray-400">
                       <Calendar className="w-3 h-3" />
                       <span>{hint.createdAt.toLocaleDateString()}</span>
@@ -61,11 +61,13 @@ const DailyHints: React.FC = () => {
                 )}
               </div>
 
-              <p className="text-gray-300 leading-relaxed mb-3">
-                {selectedHint === hint.id || hint.content.length <= 100
-                  ? hint.content
-                  : `${hint.content.substring(0, 100)}...`}
-              </p>
+              <div className="text-gray-300 leading-relaxed mb-3 quill-content"
+                dangerouslySetInnerHTML={{
+                  __html: selectedHint === hint.id || hint.content.length <= 100
+                    ? hint.content
+                    : `${hint.content.substring(0, 100)}...`
+                }}
+              />
 
               {hint.imageUrl && (
                 <div className="rounded-lg overflow-hidden">

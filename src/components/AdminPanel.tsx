@@ -191,18 +191,6 @@ const AdminPanel: React.FC = () => {
                 </div> */}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-200 mb-2">
-                  Image URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  value={hintImage}
-                  onChange={(e) => setHintImage(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent transition-all duration-200"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
 
               <motion.button
                 type="submit"
