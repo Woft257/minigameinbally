@@ -73,10 +73,10 @@ const Game: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col max-w-full">
             {/* Mobile Tab Bar */}
-            <div className="lg:hidden bg-white/5 backdrop-blur-xl border-b border-white/10 p-4">
-              <div className="flex space-x-2 overflow-x-auto">
+            <div className="lg:hidden bg-white/5 backdrop-blur-xl border-b border-white/10 p-2 sm:p-4">
+              <div className="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
@@ -84,14 +84,14 @@ const Game: React.FC = () => {
                       key={tab.id}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center space-x-1 sm:space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ${
                         activeTab === tab.id
                           ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-400 border border-cyan-400/30'
                           : 'text-gray-400 hover:text-white hover:bg-white/10'
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
-                      <span className="text-sm">{tab.label}</span>
+                      <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>{tab.label}</span>
                     </motion.button>
                   );
                 })}
@@ -105,7 +105,7 @@ const Game: React.FC = () => {
                   {renderActiveContent()}
                 </div>
               ) : (
-                <div className="h-full overflow-y-auto p-6">
+                <div className="h-full overflow-y-auto p-4 sm:p-6">
                   {renderActiveContent()}
                 </div>
               )}

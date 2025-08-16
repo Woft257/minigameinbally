@@ -46,19 +46,19 @@ const Chat: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Chat Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
-        <div className="flex items-center space-x-3">
-          <MessageCircle className="w-6 h-6 text-cyan-400" />
-          <h2 className="text-xl font-bold text-white">Group Chat</h2>
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
+          <h2 className="text-lg sm:text-xl font-bold text-white">Group Chat</h2>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-400">
-          <Users className="w-4 h-4" />
+        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-400">
+          <Users className="w-3 h-3 sm:w-4 sm:h-4" />
           <span>{players.length} online</span>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
         <AnimatePresence initial={false}>
           {messages.map((msg, index) => {
             const isCurrentUser = msg.playerId === currentPlayer?.id;
@@ -73,12 +73,12 @@ const Chat: React.FC = () => {
                 transition={{ duration: 0.3, delay: index * 0.02 }}
                 className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-xs lg:max-w-md ${isCurrentUser ? 'order-2' : 'order-1'}`}>
+                <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md ${isCurrentUser ? 'order-2' : 'order-1'}`}>
                   {!isCurrentUser && (
-                    <div className="flex items-center space-x-2 mb-1">
+                    <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
                       <span className="text-sm font-semibold text-cyan-400">{msg.playerName}</span>
                       {country && (
-                        <span className="text-xs text-gray-500 bg-gray-700 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-gray-500 bg-gray-700 px-1.5 py-0.5 rounded-full">
                           {country}
                         </span>
                       )}
@@ -86,7 +86,7 @@ const Chat: React.FC = () => {
                   )}
                   
                   <div
-                    className={`p-3 rounded-2xl shadow-lg ${
+                    className={`p-2 sm:p-3 rounded-2xl shadow-lg ${
                       isCurrentUser
                         ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
                         : 'bg-white/10 backdrop-blur-sm border border-white/20 text-gray-100'
@@ -114,19 +114,19 @@ const Chat: React.FC = () => {
       </div>
 
       {/* Message Input */}
-      <div className="p-4 border-t border-white/10">
-        <form onSubmit={handleSendMessage} className="flex space-x-3">
+      <div className="p-3 sm:p-4 border-t border-white/10">
+        <form onSubmit={handleSendMessage} className="flex space-x-2 sm:space-x-3">
           <div className="flex-1 relative">
             <input
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message..."
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-sm"
               maxLength={500}
               disabled={isTyping}
             />
-            <div className="absolute right-3 top-3 text-xs text-gray-500">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">
               {message.length}/500
             </div>
           </div>
@@ -136,12 +136,12 @@ const Chat: React.FC = () => {
             disabled={!message.trim() || isTyping}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg transition-all duration-200"
+            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg transition-all duration-200"
           >
             {isTyping ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
-              <Send className="w-5 h-5 text-white" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             )}
           </motion.button>
         </form>

@@ -118,16 +118,16 @@ const Login: React.FC = () => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl mb-6 shadow-2xl"
+            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl mb-4 sm:mb-6 shadow-2xl"
           >
-            <Waves className="w-10 h-10 text-white" />
+            <Waves className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
           </motion.div>
           
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-4xl font-bold text-white mb-2"
+            className="text-3xl sm:text-4xl font-bold text-white mb-2"
           >
             Sea & Style Retreat
           </motion.h1>
@@ -136,7 +136,7 @@ const Login: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-lg text-gray-300 mb-2"
+            className="text-base sm:text-lg text-gray-300 mb-2"
           >
             MEXC in Bali
           </motion.p>
@@ -145,9 +145,9 @@ const Login: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
-            className="inline-block px-4 py-2 bg-gradient-to-r from-cyan-400/20 to-green-400/20 rounded-full border border-cyan-400/30"
+            className="inline-block px-3 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-cyan-400/20 to-green-400/20 rounded-full border border-cyan-400/30"
           >
-            <span className="text-cyan-300 font-semibold">Mystery Person Game</span>
+            <span className="text-cyan-300 font-semibold text-sm sm:text-base">Mystery Person Game</span>
           </motion.div>
         </div>
 
@@ -156,9 +156,9 @@ const Login: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl"
+          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl"
         >
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
                 Your Name
@@ -170,7 +170,7 @@ const Login: React.FC = () => {
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-12 pr-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-base"
                   placeholder="Enter your name"
                   maxLength={20}
                   required
@@ -195,7 +195,7 @@ const Login: React.FC = () => {
                   }}
                   onFocus={() => setIsDropdownOpen(true)}
                   placeholder="Search or select your country..."
-                  className="w-full pl-12 pr-10 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200"
+                  className="w-full pl-12 pr-10 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-base"
                   required
                 />
                 <ChevronDown 
@@ -211,7 +211,7 @@ const Login: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute z-20 w-full bg-slate-800 border border-white/20 rounded-xl mt-2 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+                    className="absolute z-20 w-full bg-slate-800 border border-white/20 rounded-xl mt-2 shadow-lg max-h-48 sm:max-h-60 overflow-y-auto custom-scrollbar"
                   >
                     <div className="p-2">
                       <input
@@ -219,14 +219,14 @@ const Login: React.FC = () => {
                         placeholder="Search countries..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2"
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2 text-base"
                       />
                     </div>
                     {filteredCountries.length > 0 ? (
                       filteredCountries.map((c) => (
                         <div
                           key={c}
-                          className="px-4 py-2 text-gray-200 hover:bg-white/10 cursor-pointer transition-colors duration-150"
+                          className="px-4 py-2 text-gray-200 hover:bg-white/10 cursor-pointer transition-colors duration-150 text-base"
                           onClick={() => {
                             setCountry(c);
                             setSearchTerm(c);
@@ -237,7 +237,7 @@ const Login: React.FC = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-gray-400 text-center">No countries found.</div>
+                      <div className="px-4 py-2 text-gray-400 text-center text-base">No countries found.</div>
                     )}
                   </motion.div>
                 )}
@@ -249,10 +249,10 @@ const Login: React.FC = () => {
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full py-2 sm:py-3 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-lg"
             >
               {isLoading ? (
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center text-base">
                   <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2"></div>
                   Joining Game...
                 </div>
@@ -262,7 +262,7 @@ const Login: React.FC = () => {
             </motion.button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-white/10">
+          <div className="mt-5 pt-5 sm:mt-6 sm:pt-6 border-t border-white/10">
             <div className="flex items-center justify-between text-sm text-gray-400">
               <span>Players Online</span>
               <span className="text-cyan-400 font-semibold">{players.length}</span>

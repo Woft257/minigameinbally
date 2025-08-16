@@ -10,40 +10,40 @@ const DailyHints: React.FC = () => {
   const activeHints = dailyHints.filter(hint => hint.isActive).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Sort by creation date, newest first
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-3">
-        <Lightbulb className="w-6 h-6 text-yellow-400" />
-        <h2 className="text-xl font-bold text-white">Daily Hints</h2>
+    <div className="space-y-3 sm:space-y-4 p-4">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
+        <h2 className="text-lg sm:text-xl font-bold text-white">Daily Hints</h2>
       </div>
 
       {activeHints.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-8 text-gray-400"
+          className="text-center py-6 sm:py-8 text-gray-400"
         >
-          <Lightbulb className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p>No hints available yet...</p>
-          <p className="text-sm mt-2">Check back daily for new clues!</p>
+          <Lightbulb className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50" />
+          <p className="text-sm sm:text-base">No hints available yet...</p>
+          <p className="text-xs sm:text-sm mt-1 sm:mt-2">Check back daily for new clues!</p>
         </motion.div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {activeHints.map((hint, index) => (
             <motion.div
               key={hint.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-200"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 sm:p-4 hover:bg-white/10 transition-all duration-200"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-yellow-500/20 rounded-lg">
-                    <span className="text-yellow-400 font-bold text-sm">#{activeHints.length - index}</span> {/* Adjust index for reverse numbering */}
+              <div className="flex items-start justify-between mb-2 sm:mb-3">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 bg-yellow-500/20 rounded-lg">
+                    <span className="text-yellow-400 font-bold text-xs sm:text-sm">#{activeHints.length - index}</span> {/* Adjust index for reverse numbering */}
                   </div>
                   <div>
-                    <p className="text-white font-semibold">Hint #{activeHints.length - index}</p>
-                    <div className="flex items-center space-x-2 text-xs text-gray-400">
+                    <p className="text-sm sm:text-base font-semibold text-white">Hint #{activeHints.length - index}</p>
+                    <div className="flex items-center space-x-1 sm:space-x-2 text-xs text-gray-400">
                       <Calendar className="w-3 h-3" />
                       <span>{hint.createdAt.toLocaleDateString()}</span>
                     </div>
@@ -61,7 +61,7 @@ const DailyHints: React.FC = () => {
                 )}
               </div>
 
-              <div className="text-gray-300 leading-relaxed mb-3 quill-content"
+              <div className="text-gray-300 leading-relaxed mb-2 sm:mb-3 quill-content text-sm"
                 dangerouslySetInnerHTML={{
                   __html: selectedHint === hint.id || hint.content.length <= 100
                     ? hint.content
@@ -74,7 +74,7 @@ const DailyHints: React.FC = () => {
                   <img
                     src={hint.imageUrl}
                     alt="Hint"
-                    className="w-full h-32 object-cover"
+                    className="w-full h-24 sm:h-32 object-cover"
                   />
                 </div>
               )}

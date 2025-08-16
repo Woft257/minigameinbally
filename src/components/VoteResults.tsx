@@ -63,7 +63,7 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/10 to-blue-600/10 rounded-full blur-3xl"></div>
@@ -75,21 +75,21 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4">
-            <BarChart2 className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-3 sm:mb-4">
+            <BarChart2 className="w-7 h-7 sm:w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Vote Results by Session</h1>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Vote Results by Session</h1>
           <p className="text-sm sm:text-base text-gray-400">Overview of player votes grouped by session</p>
         </motion.div>
 
         {/* Back Button */}
-        <Link to="/admin" className="block mb-6">
+        <Link to="/admin" className="block mb-4 sm:mb-6">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors duration-200"
+            className="flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Admin Panel</span>
@@ -103,14 +103,14 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
           className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 sm:p-6 col-span-full"
         >
           {groupedVotes.length === 0 ? (
-            <p className="text-gray-400 text-center py-4">No vote sessions found yet.</p>
+            <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No vote sessions found yet.</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {groupedVotes.map(session => (
                 <div key={session.sessionKey} className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/10 p-3 rounded-lg">
                   <div className="flex flex-col mb-2 sm:mb-0">
-                    <span className="text-white font-medium text-lg">{formatSessionKeyForDisplay(session.sessionKey)}</span>
-                    <span className="text-blue-300 text-sm">{session.totalVotes} total votes</span>
+                    <span className="text-white font-medium text-base sm:text-lg">{formatSessionKeyForDisplay(session.sessionKey)}</span>
+                    <span className="text-blue-300 text-xs sm:text-sm">{session.totalVotes} total votes</span>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.02 }}

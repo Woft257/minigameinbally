@@ -41,15 +41,15 @@ const VoteDetails: React.FC<VoteDetailsProps> = ({ allVotes }) => {
 
   if (!sessionKey) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4 sm:p-6 text-white text-center">
-        <p>No session key provided.</p>
-        <Link to="/admin/vote-results" className="text-blue-400 hover:underline">Back to Vote Results</Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4 text-white text-center">
+        <p className="text-sm sm:text-base">No session key provided.</p>
+        <Link to="/admin/vote-results" className="text-blue-400 hover:underline text-sm sm:text-base">Back to Vote Results</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/10 to-blue-600/10 rounded-full blur-3xl"></div>
@@ -61,21 +61,21 @@ const VoteDetails: React.FC<VoteDetailsProps> = ({ allVotes }) => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-4">
-            <BarChart2 className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-3 sm:mb-4">
+            <BarChart2 className="w-7 h-7 sm:w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Vote Details for {sessionKey}</h1>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Vote Details for {sessionKey}</h1>
           <p className="text-sm sm:text-base text-gray-400">Detailed breakdown of votes in this session</p>
         </motion.div>
 
         {/* Back Button */}
-        <Link to="/admin/vote-results" className="block mb-6">
+        <Link to="/admin/vote-results" className="block mb-4 sm:mb-6">
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors duration-200"
+            className="flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Vote Sessions</span>
@@ -89,18 +89,18 @@ const VoteDetails: React.FC<VoteDetailsProps> = ({ allVotes }) => {
           className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 sm:p-6 col-span-full"
         >
           {sessionVotes.length === 0 ? (
-            <p className="text-gray-400 text-center py-4">No votes found for this session.</p>
+            <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No votes found for this session.</p>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Overall Ranking */}
-              <h2 className="text-xl font-bold text-white mb-4">Overall Ranking</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">Overall Ranking</h2>
               <div className="space-y-3">
                 {voteCounts.map(([person, data]) => (
                   <div key={person} className="bg-white/10 p-3 rounded-lg">
                     <div className="flex items-center justify-between">
-                      <span className="text-white font-medium">{person}</span>
+                      <span className="text-white font-medium text-sm sm:text-base">{person}</span>
                       <div className="flex items-center space-x-2">
-                        <span className="text-blue-300 font-bold">{data.count} votes</span>
+                        <span className="text-blue-300 font-bold text-sm">{data.count} votes</span>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -121,10 +121,10 @@ const VoteDetails: React.FC<VoteDetailsProps> = ({ allVotes }) => {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="mt-3 pl-4 border-l border-white/20"
+                        className="mt-2 sm:mt-3 pl-3 sm:pl-4 border-l border-white/20"
                       >
-                        <p className="text-gray-300 text-sm mb-1">Voters:</p>
-                        <ul className="list-disc list-inside text-gray-400 text-sm">
+                        <p className="text-gray-300 text-xs sm:text-sm mb-1">Voters:</p>
+                        <ul className="list-disc list-inside text-gray-400 text-xs sm:text-sm">
                           {data.voters.map((voter, i) => (
                             <li key={i}>{voter}</li>
                           ))}
@@ -136,11 +136,11 @@ const VoteDetails: React.FC<VoteDetailsProps> = ({ allVotes }) => {
               </div>
 
               {/* Individual Votes */}
-              <h2 className="text-xl font-bold text-white mt-8 mb-4">Individual Votes</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-white mt-6 sm:mt-8 mb-3 sm:mb-4">Individual Votes</h2>
               <div className="space-y-3">
                 {sessionVotes.map((vote, index) => (
                   <div key={index} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
-                    <span className="text-white font-medium">{vote.voterName} voted for {vote.suspectedPersonName}</span>
+                    <span className="text-white font-medium text-sm">{vote.voterName} voted for {vote.suspectedPersonName}</span>
                     <span className="text-xs text-gray-300">
                       ({new Date(vote.timestamp).toLocaleString('en-US', { 
                         timeZone: 'Asia/Makassar', // Bali timezone
