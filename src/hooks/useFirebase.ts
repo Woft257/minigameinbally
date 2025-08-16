@@ -7,7 +7,9 @@ import {
   orderBy, 
   limit,
   doc,
-  setDoc
+  setDoc,
+  getDocs, // Import getDocs
+  writeBatch // Import writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Message, DailyHint, Player, Vote, GameState, KingQueenVote } from '../types';
@@ -252,21 +254,45 @@ export const useFirebase = () => {
     await updateGameState({ mysteryPersonRevealed: true });
   };
 
+  const resetAllData = async () => {
+    const collectionsToClear = ['messages', 'players', 'dailyHints', 'votes', 'kingQueenVotes'];
+
+    for (const collectionName of collectionsToClear) {
+      const q = query(collection(db, collectionName));
+      const snapshot = await getDocs(q);
+      const batch = writeBatch(db);
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+    }
+
+    // Reset game state to initial values
+    await setDoc(doc(db, 'gameState', 'current'), {
+      isVotingOpen: false,
+      isKingQueenVotingOpen: false,
+      gameStarted: false,
+      mysteryPersonRevealed: false,
+      mysteryPersonId: null
+    });
+  };
+
   return {
     messages,
     players,
     dailyHints,
     votes,
-    kingQueenVotes, // Add kingQueenVotes to the returned object
+    kingQueenVotes,
     gameState,
     sendMessage,
     addPlayer,
     addDailyHint,
     updateGameState,
     submitVote,
-    submitKingQueenVote, // Add the new function to the returned object
+    submitKingQueenVote,
     setMysteryPerson,
     resetMysteryPerson,
-    revealMysteryPerson
+    revealMysteryPerson,
+    resetAllData // Add the new function to the returned object
   };
 };
