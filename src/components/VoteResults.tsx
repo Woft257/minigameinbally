@@ -1,66 +1,27 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart2, ArrowLeft } from 'lucide-react'; // Import ArrowLeft icon
-import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
+import { BarChart2, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Vote } from '../types';
 
 interface VoteResultsProps {
   votes: Vote[];
 }
 
-interface GroupedVoteSession {
-  sessionKey: string; // e.g., "2025-08-16 19h"
-  totalVotes: number;
-  votesInSession: Vote[];
-}
-
 const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
-  const navigate = useNavigate(); // Initialize useNavigate
-
-  const groupedVotes = useMemo(() => {
-    const sessions: { [key: string]: GroupedVoteSession } = {};
-
+  // Calculate vote counts for each suspected person
+  const voteCounts = useMemo(() => {
+    const counts: { [key: string]: number } = {};
     votes.forEach(vote => {
-      const date = new Date(vote.timestamp);
-      // Format to YYYY-MM-DD HHh for internal key, but display more friendly
-      const internalSessionKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}h`;
-
-      if (!sessions[internalSessionKey]) {
-        sessions[internalSessionKey] = {
-          sessionKey: internalSessionKey, // Store the machine-readable key
-          totalVotes: 0,
-          votesInSession: [],
-        };
-      }
-
-      sessions[internalSessionKey].totalVotes++;
-      sessions[internalSessionKey].votesInSession.push(vote);
+      counts[vote.suspectedPersonName] = (counts[vote.suspectedPersonName] || 0) + 1;
     });
-
-    // Sort sessions by key (timestamp) in ascending order
-    return Object.values(sessions).sort((a, b) => {
-      const dateA = new Date(a.sessionKey.replace('h', ':00'));
-      const dateB = new Date(b.sessionKey.replace('h', ':00'));
-      return dateA.getTime() - dateB.getTime();
-    });
+    // Convert to an array of { name, count } objects and sort by count descending
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
   }, [votes]);
 
-  const formatSessionKeyForDisplay = (key: string) => {
-    const date = new Date(key.replace('h', ':00'));
-    return date.toLocaleString('en-US', { 
-      month: 'long', 
-      day: 'numeric', 
-      year: 'numeric', 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'Asia/Makassar' // Bali timezone
-    });
-  };
-
-  const handleViewDetails = (sessionKey: string) => {
-    navigate(`/admin/vote-results/${encodeURIComponent(sessionKey)}`);
-  };
+  const totalVotes = votes.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
@@ -80,8 +41,8 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
           <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-3 sm:mb-4">
             <BarChart2 className="w-7 h-7 sm:w-8 h-8 text-white" />
           </div>
-          <h1 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Vote Results by Session</h1>
-          <p className="text-sm sm:text-base text-gray-400">Overview of player votes grouped by session</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Final Vote Results</h1>
+          <p className="text-sm sm:text-base text-gray-400">Overview of all player votes</p>
         </motion.div>
 
         {/* Back Button */}
@@ -102,24 +63,18 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
           transition={{ delay: 0.6 }}
           className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 sm:p-6 col-span-full"
         >
-          {groupedVotes.length === 0 ? (
-            <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No vote sessions found yet.</p>
+          {totalVotes === 0 ? (
+            <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No votes cast yet.</p>
           ) : (
             <div className="space-y-3 sm:space-y-4">
-              {groupedVotes.map(session => (
-                <div key={session.sessionKey} className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/10 p-3 rounded-lg">
-                  <div className="flex flex-col mb-2 sm:mb-0">
-                    <span className="text-white font-medium text-base sm:text-lg">{formatSessionKeyForDisplay(session.sessionKey)}</span>
-                    <span className="text-blue-300 text-xs sm:text-sm">{session.totalVotes} total votes</span>
+              <p className="text-white text-lg font-semibold mb-4">Total Votes: {totalVotes}</p>
+              {voteCounts.map((result) => (
+                <div key={result.name} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-white font-medium text-base sm:text-lg">{result.name}</span>
+                    <span className="text-blue-300 text-xs sm:text-sm">{result.count} votes</span>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleViewDetails(session.sessionKey)}
-                    className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
-                  >
-                    View Details
-                  </motion.button>
+                  <div className="w-24 h-2 bg-blue-600 rounded-full" style={{ width: `${(result.count / totalVotes) * 100}%` }}></div>
                 </div>
               ))}
             </div>
