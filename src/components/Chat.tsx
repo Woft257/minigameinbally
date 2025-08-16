@@ -27,12 +27,16 @@ const Chat: React.FC = () => {
       return;
     }
 
-    setIsTyping(true);
+    const messageToSend = message.trim();
+    setMessage(''); // Clear input immediately
+    setIsTyping(true); // Still show spinner while sending
+
     try {
-      await sendMessage(currentPlayer.id, currentPlayer.name, message.trim());
-      setMessage('');
-    } catch (error) {
+      await sendMessage(currentPlayer.id, currentPlayer.name, messageToSend);
+      // Message will appear via onSnapshot
+    } catch (err) { // Renamed 'error' to 'err' to avoid ESLint warning
       toast.error('Failed to send message');
+      setMessage(messageToSend); // Re-populate if send fails
     } finally {
       setIsTyping(false);
     }

@@ -28,7 +28,7 @@ export const useFirebase = () => {
   useEffect(() => {
     const q = query(
       collection(db, 'messages'),
-      orderBy('timestamp', 'desc'),
+      orderBy('timestamp', 'asc'), // Order by ascending timestamp
       limit(100)
     );
     
@@ -54,7 +54,7 @@ export const useFirebase = () => {
           timestamp: parsedTimestamp
         }
       }) as Message[];
-      setMessages(messagesData.reverse());
+      setMessages(messagesData); // No need to reverse
     });
 
     return unsubscribe;
