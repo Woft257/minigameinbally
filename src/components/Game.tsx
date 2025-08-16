@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Lightbulb, Vote, Users, Menu, X } from 'lucide-react';
+import { MessageCircle, Lightbulb, Vote, Users, Trophy } from 'lucide-react';
 import GameHeader from './GameHeader';
 import Chat from './Chat';
 import DailyHints from './DailyHints';
 import VotingPanel from './VotingPanel';
+import KingQueenVotingPanel from './KingQueenVotingPanel'; // Import KingQueenVotingPanel
 import PlayersList from './PlayersList';
 
 const Game: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const tabs = [
     { id: 'chat', label: 'Chat', icon: MessageCircle },
     { id: 'hints', label: 'Hints', icon: Lightbulb },
     { id: 'vote', label: 'Vote', icon: Vote },
+    { id: 'kingQueenVote', label: 'K&Q Vote', icon: Trophy }, // New tab for King & Queen Vote
     { id: 'players', label: 'Players', icon: Users }
   ];
 
@@ -26,6 +27,8 @@ const Game: React.FC = () => {
         return <DailyHints />;
       case 'vote':
         return <VotingPanel />;
+      case 'kingQueenVote': // New case for King & Queen Vote
+        return <KingQueenVotingPanel />;
       case 'players':
         return <PlayersList />;
       default:

@@ -38,8 +38,18 @@ export interface Vote {
   timestamp: Date;
 }
 
+export interface KingQueenVote {
+  id: string;
+  playerId: string;
+  voterName: string;
+  kingCandidate: string;
+  queenCandidate: string;
+  timestamp: Date;
+}
+
 export interface GameState {
   isVotingOpen: boolean;
+  isKingQueenVotingOpen: boolean; // New property for King & Queen voting
   gameStarted: boolean;
   mysteryPersonRevealed: boolean;
   mysteryPersonId?: string | null; // ID of the selected mystery person

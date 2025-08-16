@@ -6,12 +6,13 @@ import Login from './components/Login';
 import Game from './components/Game';
 import AdminPanel from './components/AdminPanel';
 import VoteResults from './components/VoteResults';
+import KingQueenVoteResults from './components/KingQueenVoteResults'; // Import KingQueenVoteResults
 import VoteDetails from './components/VoteDetails'; // Import VoteDetails
 import { useFirebase } from './hooks/useFirebase'; // Import useFirebase
 
 const AppContent: React.FC = () => {
   const { currentPlayer } = usePlayer();
-  const { votes } = useFirebase(); // Get votes from useFirebase
+  const { votes, kingQueenVotes } = useFirebase(); // Get votes and kingQueenVotes from useFirebase
 
   return (
     <Router>
@@ -19,6 +20,7 @@ const AppContent: React.FC = () => {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/admin/vote-results" element={<VoteResults votes={votes} />} /> {/* Updated path and pass votes */}
         <Route path="/admin/vote-results/:sessionKey" element={<VoteDetails allVotes={votes} />} /> {/* New route for VoteDetails */}
+        <Route path="/admin/king-queen-vote-results" element={<KingQueenVoteResults />} /> {/* New route for KingQueenVoteResults */}
         <Route
           path="/game"
           element={currentPlayer ? <Game /> : <Navigate to="/" replace />}

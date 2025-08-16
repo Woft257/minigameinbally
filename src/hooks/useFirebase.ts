@@ -10,15 +10,17 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { Message, DailyHint, Player, Vote, GameState } from '../types';
+import { Message, DailyHint, Player, Vote, GameState, KingQueenVote } from '../types';
 
 export const useFirebase = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [dailyHints, setDailyHints] = useState<DailyHint[]>([]);
   const [votes, setVotes] = useState<Vote[]>([]);
+  const [kingQueenVotes, setKingQueenVotes] = useState<KingQueenVote[]>([]);
   const [gameState, setGameState] = useState<GameState>({
     isVotingOpen: false,
+    isKingQueenVotingOpen: false, // New state for King & Queen voting
     gameStarted: false,
     mysteryPersonRevealed: false,
     mysteryPersonId: null // Initialize mysteryPersonId
@@ -155,6 +157,37 @@ export const useFirebase = () => {
     return unsubscribe;
   }, []);
 
+  // Listen to King & Queen votes
+  useEffect(() => {
+    const q = query(
+      collection(db, 'kingQueenVotes'),
+      orderBy('timestamp', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const kqVotesData = snapshot.docs.map(doc => {
+        const rawTimestamp = doc.data().timestamp;
+        let parsedTimestamp: Date;
+
+        if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
+          parsedTimestamp = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          parsedTimestamp = new Date(rawTimestamp);
+        } else {
+          parsedTimestamp = new Date(); 
+        }
+
+        return {
+          id: doc.id,
+          ...doc.data(),
+          timestamp: parsedTimestamp
+        }
+      }) as KingQueenVote[];
+      setKingQueenVotes(kqVotesData);
+    });
+
+    return unsubscribe;
+  }, []);
+
   const sendMessage = async (playerId: string, playerName: string, content: string) => {
     await addDoc(collection(db, 'messages'), {
       playerId,
@@ -197,6 +230,16 @@ export const useFirebase = () => {
     });
   };
 
+  const submitKingQueenVote = async (playerId: string, voterName: string, kingCandidate: string, queenCandidate: string) => {
+    await addDoc(collection(db, 'kingQueenVotes'), {
+      playerId,
+      voterName,
+      kingCandidate,
+      queenCandidate,
+      timestamp: new Date().toISOString()
+    });
+  };
+
   const setMysteryPerson = async (playerId: string) => {
     await updateGameState({ mysteryPersonId: playerId });
   };
@@ -214,14 +257,16 @@ export const useFirebase = () => {
     players,
     dailyHints,
     votes,
+    kingQueenVotes, // Add kingQueenVotes to the returned object
     gameState,
     sendMessage,
     addPlayer,
     addDailyHint,
     updateGameState,
     submitVote,
+    submitKingQueenVote, // Add the new function to the returned object
     setMysteryPerson,
     resetMysteryPerson,
-    revealMysteryPerson // Add the new function to the returned object
+    revealMysteryPerson
   };
 };
