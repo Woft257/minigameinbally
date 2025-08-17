@@ -93,8 +93,12 @@ const Login: React.FC = () => {
       };
       setCurrentPlayer(newPlayer);
       toast.success(`Welcome to MEXC Bali, ${name}! 🌊`);
-    } catch (error) {
-      toast.error('Failed to join the game. Please try again.');
+    } catch (error: unknown) {
+      let errorMessage = 'An unknown error occurred.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      toast.error(`Failed to join the game: ${errorMessage}. Please try again.`);
     } finally {
       setIsLoading(false);
     }
@@ -181,17 +185,17 @@ const Login: React.FC = () => {
         >
           <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-800 mb-2">
                 Your Name
               </label>
               <div className="relative">
-                <UserPlus className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <UserPlus className="absolute left-3 top-3 w-5 h-5 text-gray-600" />
                 <input
                   type="text"
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-2 sm:py-3 glass-effect rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
+                  className="w-full pl-12 pr-4 py-2 sm:py-3 glass-effect rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
                   placeholder="Enter your name"
                   maxLength={20}
                   required
@@ -200,11 +204,11 @@ const Login: React.FC = () => {
             </div>
 
             <div className="relative" ref={dropdownRef}>
-              <label htmlFor="country-input" className="block text-sm font-medium text-gray-200 mb-2">
+              <label htmlFor="country-input" className="block text-sm font-medium text-gray-800 mb-2">
                 Country
               </label>
               <div className="relative">
-                <Globe className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <Globe className="absolute left-3 top-3 w-5 h-5 text-gray-600" />
                 <input
                   type="text"
                   id="country-input"
@@ -216,11 +220,11 @@ const Login: React.FC = () => {
                   }}
                   onFocus={() => setIsDropdownOpen(true)}
                   placeholder="Search or select your country..."
-                  className="w-full pl-12 pr-10 py-2 sm:py-3 glass-effect rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
+                  className="w-full pl-12 pr-10 py-2 sm:py-3 glass-effect rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
                   required
                 />
-                <ChevronDown 
-                  className={`absolute right-3 top-3 w-5 h-5 text-gray-400 cursor-pointer transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                <ChevronDown
+                  className={`absolute right-3 top-3 w-5 h-5 text-gray-600 cursor-pointer transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 />
               </div>
@@ -240,14 +244,14 @@ const Login: React.FC = () => {
                         placeholder="Search countries..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2 text-base"
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2 text-base"
                       />
                     </div>
                     {filteredCountries.length > 0 ? (
                       filteredCountries.map((c) => (
                         <div
                           key={c}
-                          className="px-4 py-2 text-gray-200 hover:bg-white/10 cursor-pointer transition-colors duration-150 text-base"
+                          className="px-4 py-2 text-gray-800 hover:bg-white/10 cursor-pointer transition-colors duration-150 text-base"
                           onClick={() => {
                             setCountry(c);
                             setSearchTerm(c);
@@ -258,7 +262,7 @@ const Login: React.FC = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-gray-400 text-center text-base">No countries found.</div>
+                      <div className="px-4 py-2 text-gray-600 text-center text-base">No countries found.</div>
                     )}
                   </motion.div>
                 )}
@@ -283,12 +287,6 @@ const Login: React.FC = () => {
             </motion.button>
           </form>
 
-          <div className="mt-5 pt-5 sm:mt-6 sm:pt-6 border-t border-white/10">
-            <div className="flex items-center justify-between text-sm text-gray-400">
-              <span>Players Online</span>
-              <span className="text-bali-emerald font-semibold">{players.length}</span>
-            </div>
-          </div>
         </motion.div>
       </motion.div>
     </div>
