@@ -151,7 +151,7 @@ const Login: React.FC = () => {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="font-display text-4xl sm:text-5xl font-bold text-white mb-3 tracking-wide"
           >
-            MEXC Bali
+            Sea & Style Retreat: MEXC in Bali
           </motion.h1>
           
           <motion.p
