@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, UserPlus, Waves, Search, ChevronDown } from 'lucide-react';
+import { Globe, UserPlus, Palmtree, ChevronDown } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 import { usePlayer } from '../context/PlayerContext';
 import toast from 'react-hot-toast';
+
+import baliHeroBg from '../assets/bali-hero-bg.jpg';
 
 const allCountries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
@@ -99,11 +101,23 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4">
-      {/* Background Elements */}
+    <div className="min-h-screen bg-bali-gradient flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Hero Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+        style={{ backgroundImage: `url(${baliHeroBg})` }}
+      />
+      
+      {/* Tropical Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-green-400/20 to-teal-600/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 opacity-20">
+          <Palmtree className="w-full h-full text-bali-emerald animate-palm-sway" />
+        </div>
+        <div className="absolute bottom-20 right-20 w-24 h-24 opacity-20">
+          <Palmtree className="w-full h-full text-bali-gold animate-palm-sway" style={{ animationDelay: '2s' }} />
+        </div>
+        <div className="absolute top-1/3 right-10 w-20 h-20 bg-bali-emerald/10 rounded-full blur-2xl animate-tropical-float"></div>
+        <div className="absolute bottom-1/3 left-20 w-28 h-28 bg-bali-coral/10 rounded-full blur-2xl animate-tropical-float" style={{ animationDelay: '3s' }}></div>
       </div>
 
       <motion.div
@@ -118,36 +132,43 @@ const Login: React.FC = () => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl mb-4 sm:mb-6 shadow-2xl"
+            className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 mb-6 animate-tropical-float"
           >
-            <Waves className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+            <img 
+              src="/MEXC Logo Mark_Blue.png" 
+              alt="MEXC Bali Logo" 
+              className="w-full h-full object-contain drop-shadow-2xl filter brightness-0 invert"
+            />
           </motion.div>
           
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-3xl sm:text-4xl font-bold text-white mb-2"
+            className="font-display text-4xl sm:text-5xl font-bold text-white mb-3 tracking-wide"
           >
-            Sea & Style Retreat
+            MEXC Bali
           </motion.h1>
           
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-base sm:text-lg text-gray-300 mb-2"
+            className="text-lg sm:text-xl text-bali-emerald font-medium mb-4"
           >
-            MEXC in Bali
+            Tropical Mystery Experience
           </motion.p>
           
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
-            className="inline-block px-3 py-1 sm:px-4 sm:py-2 bg-gradient-to-r from-cyan-400/20 to-green-400/20 rounded-full border border-cyan-400/30"
+            className="inline-block px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-bali-emerald/20 to-bali-turquoise/20 rounded-full border border-bali-emerald/40 shadow-lg"
           >
-            <span className="text-cyan-300 font-semibold text-sm sm:text-base">Mystery Person Game</span>
+            <span className="text-white font-semibold text-sm sm:text-base flex items-center gap-2">
+              <Palmtree className="w-4 h-4" />
+              Mystery Person Game
+            </span>
           </motion.div>
         </div>
 
@@ -156,7 +177,7 @@ const Login: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl"
+          className="glass-effect rounded-3xl p-6 sm:p-8 shadow-2xl"
         >
           <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
             <div>
@@ -170,7 +191,7 @@ const Login: React.FC = () => {
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-base"
+                  className="w-full pl-12 pr-4 py-2 sm:py-3 glass-effect rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
                   placeholder="Enter your name"
                   maxLength={20}
                   required
@@ -195,7 +216,7 @@ const Login: React.FC = () => {
                   }}
                   onFocus={() => setIsDropdownOpen(true)}
                   placeholder="Search or select your country..."
-                  className="w-full pl-12 pr-10 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-base"
+                  className="w-full pl-12 pr-10 py-2 sm:py-3 glass-effect rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-bali-emerald/50 focus:border-bali-emerald/30 transition-all duration-200 text-base"
                   required
                 />
                 <ChevronDown 
@@ -249,7 +270,7 @@ const Login: React.FC = () => {
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-2 sm:py-3 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-lg"
+              className="w-full py-2 sm:py-3 px-6 bg-tropical-gradient hover:shadow-xl hover:shadow-bali-emerald/25 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-lg transform hover:scale-105"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center text-base">
@@ -257,7 +278,7 @@ const Login: React.FC = () => {
                   Joining Game...
                 </div>
               ) : (
-                'Join the Mystery 🏝️'
+                '🌺 Join Bali Mystery 🏝️'
               )}
             </motion.button>
           </form>
@@ -265,7 +286,7 @@ const Login: React.FC = () => {
           <div className="mt-5 pt-5 sm:mt-6 sm:pt-6 border-t border-white/10">
             <div className="flex items-center justify-between text-sm text-gray-400">
               <span>Players Online</span>
-              <span className="text-cyan-400 font-semibold">{players.length}</span>
+              <span className="text-bali-emerald font-semibold">{players.length}</span>
             </div>
           </div>
         </motion.div>

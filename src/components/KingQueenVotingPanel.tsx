@@ -38,11 +38,11 @@ const KingQueenVotingPanel: React.FC = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6 text-center"
+      className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4 sm:p-6 text-center"
     >
-      <Clock className="w-10 h-10 sm:w-12 h-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+      <Clock className="w-10 h-10 sm:w-12 h-12 text-gray-300 mx-auto mb-3 sm:mb-4" />
       <h3 className="text-lg sm:text-xl font-bold text-white mb-2">King & Queen Voting Not Available</h3>
-      <p className="text-sm sm:text-base text-gray-400">
+      <p className="text-sm sm:text-base text-gray-300">
         King and Queen voting will open when the admin decides!
       </p>
     </motion.div>
@@ -53,19 +53,19 @@ return (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="space-y-4 sm:space-y-6 p-4"
+    className="space-y-4 sm:space-y-6 p-4 smooth-scroll"
   >
     <div className="flex items-center space-x-2 sm:space-x-3">
       <Crown className="w-5 h-5 sm:w-6 h-6 text-yellow-400" />
       <h2 className="text-lg sm:text-xl font-bold text-white">King & Queen Vote</h2>
     </div>
 
-    <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-400/30 rounded-xl p-3 sm:p-4">
+    <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30 rounded-xl p-3 sm:p-4">
       <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
         <Trophy className="w-4 h-4 sm:w-5 h-5 text-yellow-400" />
         <h3 className="text-base sm:text-lg font-semibold text-white">Vote for King & Queen!</h3>
       </div>
-      <p className="text-sm sm:text-base text-gray-300">
+      <p className="text-sm sm:text-base text-gray-200">
         Who do you think should be King and Queen? Enter their names below and submit your votes.
       </p>
     </div>
@@ -75,11 +75,11 @@ return (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, y: -20 }}
-          className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6"
+          className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4 sm:p-6"
         >
           <form onSubmit={handleSubmitVote} className="space-y-3 sm:space-y-4">
             <div>
-              <label htmlFor="kingCandidate" className="block text-sm font-medium text-gray-200 mb-2">
+              <label htmlFor="kingCandidate" className="block text-sm font-medium text-white mb-2">
                 Who should be King?
               </label>
               <input
@@ -87,14 +87,14 @@ return (
                 id="kingCandidate"
                 value={kingCandidate}
                 onChange={(e) => setKingCandidate(e.target.value)}
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent transition-all duration-200 text-sm"
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-slate-800/80 border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400/50 transition-all duration-200 text-sm"
                 placeholder="Enter King's name..."
                 maxLength={50}
                 required
               />
             </div>
             <div>
-              <label htmlFor="queenCandidate" className="block text-sm font-medium text-gray-200 mb-2">
+              <label htmlFor="queenCandidate" className="block text-sm font-medium text-white mb-2">
                 Who should be Queen?
               </label>
               <input
@@ -102,7 +102,7 @@ return (
                 id="queenCandidate"
                 value={queenCandidate}
                 onChange={(e) => setQueenCandidate(e.target.value)}
-                className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-transparent transition-all duration-200 text-sm"
+                className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-slate-800/80 border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 focus:border-yellow-400/50 transition-all duration-200 text-sm"
                 placeholder="Enter Queen's name..."
                 maxLength={50}
                 required
@@ -123,20 +123,20 @@ return (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-green-500/10 border border-green-400/30 rounded-xl p-4 sm:p-6 text-center"
+          className="bg-emerald-600/20 border border-emerald-400/30 rounded-xl p-4 sm:p-6 text-center"
         >
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 h-16 bg-green-500/20 rounded-full mb-3 sm:mb-4">
-            <Crown className="w-7 h-7 sm:w-8 h-8 text-green-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 h-16 bg-emerald-500/20 rounded-full mb-3 sm:mb-4">
+            <Crown className="w-7 h-7 sm:w-8 h-8 text-emerald-400" />
           </div>
           <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Votes Submitted!</h3>
-          <p className="text-sm sm:text-base text-gray-300">
+          <p className="text-sm sm:text-base text-gray-200">
             Thank you for participating! Wait for the King and Queen results to be revealed.
           </p>
         </motion.div>
       )}
     </AnimatePresence>
 
-    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 sm:p-4">
+    <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3 sm:p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Users className="w-3 h-3 sm:w-4 h-4 text-cyan-400" />

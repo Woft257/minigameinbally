@@ -15,11 +15,11 @@ const PlayersList: React.FC = () => {
   }, {} as Record<string, typeof players>);
 
   return (
-    <div className="space-y-3 sm:space-y-4 p-4">
+    <div className="space-y-3 sm:space-y-4 p-4 smooth-scroll">
       <div className="flex items-center space-x-2 sm:space-x-3">
-        <Users className="w-5 h-5 sm:w-6 h-6 text-green-400" />
+        <Users className="w-5 h-5 sm:w-6 h-6 text-emerald-400" />
         <h2 className="text-lg sm:text-xl font-bold text-white">Players</h2>
-        <span className="px-2 py-0.5 sm:py-1 bg-green-500/20 text-green-400 text-xs sm:text-sm font-semibold rounded-full">
+        <span className="px-2 py-0.5 sm:py-1 bg-emerald-500/20 text-emerald-400 text-xs sm:text-sm font-semibold rounded-full">
           {players.length}
         </span>
       </div>
@@ -30,32 +30,26 @@ const PlayersList: React.FC = () => {
             key={country}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3 sm:p-4"
+            className="bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3 sm:p-4"
           >
             <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-              <Globe className="w-3 h-3 sm:w-4 h-4 text-blue-400" />
+              <Globe className="w-3 h-3 sm:w-4 h-4 text-cyan-400" />
               <h3 className="font-base sm:font-semibold text-sm sm:text-base text-white">{country}</h3>
-              <span className="text-xs text-gray-400">({countryPlayers.length})</span>
+              <span className="text-xs text-gray-300">({countryPlayers.length})</span>
             </div>
             
             <div className="grid gap-2">
               {countryPlayers.map((player) => (
                 <div
                   key={player.id}
-                  className="flex items-center justify-between p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200"
+                  className="flex items-center justify-between p-2 bg-slate-800/60 rounded-lg hover:bg-slate-700/60 transition-colors duration-200"
                 >
                   <div className="flex items-center space-x-2">
                     {player.isAdmin && (
                       <Crown className="w-3 h-3 sm:w-4 h-4 text-yellow-400" />
                     )}
-                    <span className="text-sm text-gray-200">{player.name}</span>
+                    <span className="text-sm text-white">{player.name}</span>
                   </div>
-                  <span className="text-xs text-gray-500">
-                    {player.joinedAt.toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </span>
                 </div>
               ))}
             </div>

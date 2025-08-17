@@ -1,6 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Bali Color Palette */
+  --color-bali-emerald: 156 73% 59%;
+  --color-bali-turquoise: 177 70% 41%;
+  --color-bali-sunset: 14 91% 60%;
+  --color-bali-coral: 11 93% 68%;
+  --color-bali-gold: 45 100% 51%;
+  --color-bali-jade: 159 64% 28%;
+  
+  /* Gradients */
+  --gradient-ocean: linear-gradient(135deg, hsl(190, 81%, 67%) 0%, hsl(168, 76%, 42%) 100%);
+  --gradient-tropical: linear-gradient(135deg, hsl(156, 73%, 59%) 0%, hsl(45, 100%, 51%) 100%);
+  --gradient-sunset: linear-gradient(135deg, hsl(14, 91%, 60%) 0%, hsl(11, 93%, 68%) 50%, hsl(25, 95%, 53%) 100%);
+  --gradient-mexc: linear-gradient(135deg, hsl(168, 76%, 42%) 0%, hsl(177, 70%, 41%) 50%, hsl(156, 73%, 59%) 100%);
+  
+  /* Surface Colors */
+  --surface-glass: rgba(255, 255, 255, 0.12);
+  --surface-glass-hover: rgba(255, 255, 255, 0.18);
+  --border-glass: rgba(255, 255, 255, 0.25);
+  
+  /* Dark Mode Background */
+  --bg-primary: hsl(220, 25%, 12%); /* Darker blue-grey background */
+  --bg-secondary: hsl(220, 20%, 18%); /* Slightly lighter dark blue-grey */
+  
+  /* Text Colors */
+  --text-primary: hsl(0, 0%, 95%); /* Near white for primary text */
+  --text-secondary: hsl(210, 15%, 75%); /* Light grey for secondary text */
+  --text-muted: hsl(210, 10%, 55%); /* Muted text color */
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  background-attachment: fixed;
+  color: var(--text-primary); /* Near white for better contrast */
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #059669, #0891b2);
+}
+
+/* Mobile scrollbar optimization */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Better mobile scroll performance */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for specific elements */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--color-bali-turquoise)) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--color-bali-turquoise));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--color-bali-emerald));
+}
+
+/* Glass Effect Utilities */
+.glass-effect {
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+}
+
+.glass-effect:hover {
+  background: var(--surface-glass-hover);
+}
+
+/* Tropical Animations */
+@keyframes palm-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes ocean-wave {
+  0%, 100% { transform: translateX(0) scale(1); }
+  50% { transform: translateX(10px) scale(1.05); }
+}
+
+@keyframes tropical-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.animate-palm-sway {
+  animation: palm-sway 4s ease-in-out infinite;
+}
+
+.animate-ocean-wave {
+  animation: ocean-wave 8s ease-in-out infinite;
+}
+
+.animate-tropical-float {
+  animation: tropical-float 6s ease-in-out infinite;
+}
 
 /* Custom styles for ReactQuill to match the theme */
 .quill-custom-theme .ql-toolbar {
@@ -13,35 +149,35 @@
 }
 
 .quill-custom-theme .ql-container {
-  background-color: rgba(255, 255, 255, 0.05); /* Lighter background for editor area */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border */
-  border-bottom-left-radius: 0.75rem; /* rounded-xl */
-  border-bottom-right-radius: 0.75rem; /* rounded-xl */
-  min-height: 150px; /* Adjust as needed */
+  background-color: rgba(255, 255, 255, 0.08); /* More transparent background */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  min-height: 150px;
 }
 
 .quill-custom-theme .ql-editor {
-  color: #fff; /* White text for content */
-  padding: 1rem; /* p-4 */
+  color: var(--text-primary); /* Near white text for content */
+  padding: 1rem;
 }
 
 .quill-custom-theme .ql-editor.ql-blank::before {
-  color: rgba(156, 163, 175, 0.6); /* placeholder-gray-400 with some transparency */
-  font-style: normal; /* Remove italic default */
-  left: 1rem; /* Align with padding */
+  color: rgba(156, 163, 175, 0.8); /* More visible placeholder */
+  font-style: normal;
+  left: 1rem;
 }
 
 /* Adjust toolbar button colors for better visibility */
 .quill-custom-theme .ql-toolbar button {
-  color: #fff; /* White icons */
+  color: var(--text-primary); /* Near white icons */
 }
 
 .quill-custom-theme .ql-toolbar .ql-stroke {
-  stroke: #fff; /* White stroke for icons */
+  stroke: var(--text-primary); /* Near white stroke for icons */
 }
 
 .quill-custom-theme .ql-toolbar .ql-fill {
-  fill: #fff; /* White fill for icons */
+  fill: var(--text-primary); /* Near white fill for icons */
 }
 
 /* Active/selected state for toolbar buttons */
@@ -55,11 +191,11 @@
 
 /* Dropdowns for headers/fonts */
 .quill-custom-theme .ql-picker {
-  color: #fff; /* White text for dropdowns */
+  color: var(--text-primary); /* Near white text for dropdowns */
 }
 
 .quill-custom-theme .ql-picker-label {
-  color: #fff; /* White text for dropdown labels */
+  color: var(--text-primary); /* Near white text for dropdown labels */
 }
 
 .quill-custom-theme .ql-picker-options {
@@ -82,9 +218,9 @@
 }
 
 .quill-custom-theme .ql-tooltip input {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background-color: rgba(0, 0, 0, 0.15); /* Slightly darker background for input */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Lighter border */
+  color: var(--text-primary); /* Near white text */
 }
 
 .quill-custom-theme .ql-tooltip a.ql-action,

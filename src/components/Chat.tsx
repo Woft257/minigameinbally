@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MessageCircle, Users } from 'lucide-react';
@@ -28,15 +29,14 @@ const Chat: React.FC = () => {
     }
 
     const messageToSend = message.trim();
-    setMessage(''); // Clear input immediately
-    setIsTyping(true); // Still show spinner while sending
+    setMessage('');
+    setIsTyping(true);
 
     try {
       await sendMessage(currentPlayer.id, currentPlayer.name, messageToSend);
-      // Message will appear via onSnapshot
-    } catch (err) { // Renamed 'error' to 'err' to avoid ESLint warning
+    } catch (err) {
       toast.error('Failed to send message');
-      setMessage(messageToSend); // Re-populate if send fails
+      setMessage(messageToSend);
     } finally {
       setIsTyping(false);
     }
@@ -50,12 +50,12 @@ const Chat: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Chat Header */}
-      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-slate-700/50 bg-slate-900/50">
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
-          <h2 className="text-lg sm:text-xl font-bold text-white">Group Chat</h2>
+          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
+          <h2 className="text-lg sm:text-xl font-bold text-white">Bali Chat</h2>
         </div>
-        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-gray-400">
+        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-emerald-400 font-medium">
           <Users className="w-3 h-3 sm:w-4 sm:h-4" />
           <span>{players.length} online</span>
         </div>
@@ -80,9 +80,9 @@ const Chat: React.FC = () => {
                 <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md ${isCurrentUser ? 'order-2' : 'order-1'}`}>
                   {!isCurrentUser && (
                     <div className="flex items-center space-x-1 sm:space-x-2 mb-1">
-                      <span className="text-sm font-semibold text-cyan-400">{msg.playerName}</span>
+                      <span className="text-sm font-semibold text-emerald-400">{msg.playerName}</span>
                       {country && (
-                        <span className="text-xs text-gray-500 bg-gray-700 px-1.5 py-0.5 rounded-full">
+                        <span className="text-xs text-white bg-cyan-500/30 px-1.5 py-0.5 rounded-full border border-cyan-400/50">
                           {country}
                         </span>
                       )}
@@ -92,16 +92,16 @@ const Chat: React.FC = () => {
                   <div
                     className={`p-2 sm:p-3 rounded-2xl shadow-lg ${
                       isCurrentUser
-                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
-                        : 'bg-white/10 backdrop-blur-sm border border-white/20 text-gray-100'
+                        ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-emerald-500/25'
+                        : 'bg-slate-800/80 backdrop-blur-sm border border-slate-600/50 text-gray-100'
                     }`}
                   >
                     <p className="text-sm leading-relaxed">{msg.content}</p>
                     <p className={`text-xs mt-1 ${
-                      isCurrentUser ? 'text-blue-100' : 'text-gray-400'
+                      isCurrentUser ? 'text-white/80' : 'text-gray-400'
                     }`}>
                       {new Date(msg.timestamp).toLocaleString('en-US', { 
-                        timeZone: 'Asia/Makassar', // Bali timezone
+                        timeZone: 'Asia/Makassar',
                         month: 'numeric', 
                         day: 'numeric', 
                         hour: '2-digit', 
@@ -118,7 +118,7 @@ const Chat: React.FC = () => {
       </div>
 
       {/* Message Input */}
-      <div className="p-3 sm:p-4 border-t border-white/10">
+      <div className="p-3 sm:p-4 border-t border-slate-700/50 bg-slate-900/50">
         <form onSubmit={handleSendMessage} className="flex space-x-2 sm:space-x-3">
           <div className="flex-1 relative">
             <input
@@ -126,7 +126,7 @@ const Chat: React.FC = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message..."
-              className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-transparent transition-all duration-200 text-sm"
+              className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-slate-800/80 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400/50 transition-all duration-200 text-sm"
               maxLength={500}
               disabled={isTyping}
             />
@@ -140,7 +140,7 @@ const Chat: React.FC = () => {
             disabled={!message.trim() || isTyping}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg transition-all duration-200"
+            className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:shadow-xl hover:shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
             {isTyping ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -6,23 +6,21 @@ import Login from './components/Login';
 import Game from './components/Game';
 import AdminPanel from './components/AdminPanel';
 import VoteResults from './components/VoteResults';
-import KingQueenVoteResults from './components/KingQueenVoteResults'; // Import KingQueenVoteResults
-import VoteDetails from './components/VoteDetails'; // Import VoteDetails
-import ResetPanel from './components/ResetPanel'; // Import ResetPanel
-import { useFirebase } from './hooks/useFirebase'; // Import useFirebase
+import KingQueenVoteResults from './components/KingQueenVoteResults';
+import VoteDetails from './components/VoteDetails';
+import ResetPanel from './components/ResetPanel';
+import AdminAuth from './components/AdminAuth'; // Import AdminAuth
+import { useFirebase } from './hooks/useFirebase';
 
 const AppContent: React.FC = () => {
   const { currentPlayer } = usePlayer();
-  const { votes, kingQueenVotes } = useFirebase(); // Get votes and kingQueenVotes from useFirebase
+  const { votes } = useFirebase();
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = React.useState(false); // New state for admin authentication
 
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/admin/vote-results" element={<VoteResults votes={votes} />} /> {/* Updated path and pass votes */}
-        <Route path="/admin/vote-results/:sessionKey" element={<VoteDetails allVotes={votes} />} /> {/* New route for VoteDetails */}
-        <Route path="/admin/king-queen-vote-results" element={<KingQueenVoteResults />} /> {/* New route for KingQueenVoteResults */}
-        <Route path="/admin/reset" element={<ResetPanel />} /> {/* New route for ResetPanel */}
+        <Route path="/admin/*" element={isAdminAuthenticated ? <AdminRoutes votes={votes} /> : <AdminAuth onAuthSuccess={() => setIsAdminAuthenticated(true)} />} />
         <Route
           path="/game"
           element={currentPlayer ? <Game /> : <Navigate to="/" replace />}
@@ -35,6 +33,17 @@ const AppContent: React.FC = () => {
     </Router>
   );
 };
+
+// New component to encapsulate admin routes
+const AdminRoutes: React.FC<{ votes: any[] }> = ({ votes }) => (
+  <Routes>
+    <Route path="/" element={<AdminPanel />} />
+    <Route path="/vote-results" element={<VoteResults votes={votes} />} />
+    <Route path="/vote-results/:sessionKey" element={<VoteDetails allVotes={votes} />} />
+    <Route path="/king-queen-vote-results" element={<KingQueenVoteResults />} />
+    <Route path="/reset" element={<ResetPanel />} />
+  </Routes>
+);
 
 function App() {
   return (

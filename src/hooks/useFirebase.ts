@@ -218,6 +218,11 @@ export const useFirebase = () => {
     });
   };
 
+  const markHintAsRead = async (hintId: string) => {
+    const hintDocRef = doc(db, 'dailyHints', hintId);
+    await setDoc(hintDocRef, { isActive: false }, { merge: true });
+  };
+
   const updateGameState = async (newState: Partial<GameState>) => {
     const gameStateDoc = doc(db, 'gameState', 'current');
     await setDoc(gameStateDoc, newState, { merge: true });
@@ -293,6 +298,7 @@ export const useFirebase = () => {
     setMysteryPerson,
     resetMysteryPerson,
     revealMysteryPerson,
-    resetAllData // Add the new function to the returned object
+    resetAllData,
+    markHintAsRead
   };
 };
