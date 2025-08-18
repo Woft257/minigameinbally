@@ -18,10 +18,9 @@ const Chat: React.FC = () => {
   const { messages, players, sendMessage, loadMoreMessages, hasMoreMessages } = useFirebase();
   const { currentPlayer } = usePlayer();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // New state to track initial load
 
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   }, []);
 
   // Use useLayoutEffect to capture scroll position before DOM updates
@@ -33,16 +32,19 @@ const Chat: React.FC = () => {
     }
   }); // No dependencies, runs after every render
 
-  // Effect for auto-scrolling based on new messages
+  // Effect for initial scroll and new messages
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
 
-    // On initial load, always scroll to bottom
-    if (isInitialLoad) {
-      scrollToBottom();
-      setIsInitialLoad(false);
-      lastMessageIdRef.current = messages.length > 0 ? messages[messages.length - 1].id : undefined;
+    // On initial load or when messages are first populated, scroll to bottom instantly
+    // This effect runs after the component mounts and whenever messages change.
+    // The `key` prop on Chat component in Game.tsx ensures this component remounts
+    // when the tab is switched, effectively making this an "initial load" for the chat view.
+    if (messages.length > 0 && container.scrollHeight > container.clientHeight && container.scrollTop === 0) {
+      // Only scroll if there's content to scroll and we are at the very top
+      scrollToBottom('auto');
+      lastMessageIdRef.current = messages[messages.length - 1].id;
       return;
     }
 
@@ -64,13 +66,13 @@ const Chat: React.FC = () => {
 
     // If new messages arrived at the end AND the user was at the bottom, scroll to the new bottom.
     if (hasNewMessageAtEnd && wasAtBottom) {
-      scrollToBottom();
+      scrollToBottom('smooth'); // Use 'smooth' for new messages after initial load
     }
 
     // Update the last message ID for the next render
     lastMessageIdRef.current = currentLastMessage ? currentLastMessage.id : undefined;
 
-  }, [messages, isInitialLoad, isLoadingMore, scrollToBottom]); // Dependencies: messages, isInitialLoad, isLoadingMore, scrollToBottom
+  }, [messages, isLoadingMore, scrollToBottom]); // Dependencies: messages, isLoadingMore, scrollToBottom
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -106,7 +108,8 @@ const Chat: React.FC = () => {
       await sendMessage(currentPlayer.id, currentPlayer.name, messageToSend);
       // Explicitly scroll to bottom after sending a message
       scrollToBottom();
-    } catch (_err) {
+    } catch (err) { // Changed _err to err to fix ESLint error
+      console.error("Failed to send message:", err);
       toast.error('Failed to send message');
       setMessage(messageToSend);
     } finally {

@@ -23,7 +23,7 @@ const Game: React.FC = () => {
   const renderActiveContent = () => {
     switch (activeTab) {
       case 'chat':
-        return <Chat />;
+        return <Chat key="chat-tab" />;
       case 'hints':
         return <DailyHints />;
       case 'vote':
