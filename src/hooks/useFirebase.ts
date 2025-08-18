@@ -5,7 +5,8 @@ import {
   onSnapshot, 
   query, 
   orderBy, 
-  limit,
+  limit, // Re-add limit
+  startAfter, // Add startAfter for pagination
   doc,
   setDoc,
   getDocs, // Import getDocs
@@ -16,6 +17,10 @@ import { Message, DailyHint, Player, Vote, GameState, KingQueenVote } from '../t
 
 export const useFirebase = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesLimit, setMessagesLimit] = useState(20); // Initial limit for messages
+  const [lastVisibleMessage, setLastVisibleMessage] = useState<any>(null); // For pagination
+  const [hasMoreMessages, setHasMoreMessages] = useState(true); // To check if there are more messages to load
+
   const [players, setPlayers] = useState<Player[]>([]);
   const [dailyHints, setDailyHints] = useState<DailyHint[]>([]);
   const [votes, setVotes] = useState<Vote[]>([]);
@@ -28,27 +33,24 @@ export const useFirebase = () => {
     mysteryPersonId: null // Initialize mysteryPersonId
   });
 
-  // Listen to messages
+  // Listen to messages with pagination
   useEffect(() => {
-    const q = query(
+    let q = query(
       collection(db, 'messages'),
-      orderBy('timestamp', 'asc'), // Order by ascending timestamp
-      limit(100)
+      orderBy('timestamp', 'desc'), // Order by descending timestamp for latest messages first
+      limit(messagesLimit)
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messagesData = snapshot.docs.map(doc => {
+      const newMessagesData = snapshot.docs.map(doc => {
         const rawTimestamp = doc.data().timestamp;
         let parsedTimestamp: Date;
 
         if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
-          // It's a Firestore Timestamp object
           parsedTimestamp = rawTimestamp.toDate();
         } else if (typeof rawTimestamp === 'string') {
-          // It's an ISO string
           parsedTimestamp = new Date(rawTimestamp);
         } else {
-          // Fallback for missing or unrecognised format
           parsedTimestamp = new Date(); 
         }
 
@@ -58,11 +60,50 @@ export const useFirebase = () => {
           timestamp: parsedTimestamp
         }
       }) as Message[];
-      setMessages(messagesData); // No need to reverse
+      
+      setMessages(newMessagesData.reverse()); // Reverse to display oldest at top, newest at bottom
+      setLastVisibleMessage(snapshot.docs[snapshot.docs.length - 1]);
+      setHasMoreMessages(newMessagesData.length === messagesLimit);
     });
 
     return unsubscribe;
-  }, []);
+  }, [messagesLimit]);
+
+  const loadMoreMessages = () => {
+    if (!lastVisibleMessage || !hasMoreMessages) return;
+
+    const q = query(
+      collection(db, 'messages'),
+      orderBy('timestamp', 'desc'),
+      startAfter(lastVisibleMessage),
+      limit(20) // Load 20 more messages
+    );
+
+    getDocs(q).then((snapshot) => {
+      const olderMessagesData = snapshot.docs.map(doc => {
+        const rawTimestamp = doc.data().timestamp;
+        let parsedTimestamp: Date;
+
+        if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
+          parsedTimestamp = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          parsedTimestamp = new Date(rawTimestamp);
+        } else {
+          parsedTimestamp = new Date(); 
+        }
+
+        return {
+          id: doc.id,
+          ...doc.data(),
+          timestamp: parsedTimestamp
+        }
+      }) as Message[];
+
+      setMessages((prevMessages) => [...olderMessagesData.reverse(), ...prevMessages]);
+      setLastVisibleMessage(snapshot.docs[snapshot.docs.length - 1]);
+      setHasMoreMessages(olderMessagesData.length === 20);
+    });
+  };
 
   // Listen to players
   useEffect(() => {
@@ -299,6 +340,8 @@ export const useFirebase = () => {
     resetMysteryPerson,
     revealMysteryPerson,
     resetAllData,
-    markHintAsRead
+    markHintAsRead,
+    loadMoreMessages, // Expose loadMoreMessages
+    hasMoreMessages // Expose hasMoreMessages
   };
 };
