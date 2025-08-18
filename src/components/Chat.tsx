@@ -88,12 +88,6 @@ const Chat: React.FC = () => {
     }
   };
 
-  const handleFocus = () => {
-    // Scroll the input into view when focused, especially for mobile virtual keyboards
-    if (inputRef.current) {
-      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,21 +121,9 @@ const Chat: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-slate-700/50 bg-slate-900/50 fixed top-0 left-0 right-0 w-full z-10">
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
-          <h2 className="text-lg sm:text-xl font-bold text-white">Bali Chat</h2>
-        </div>
-        <div className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-emerald-400 font-medium">
-          <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span>{players.length} online</span>
-        </div>
-      </div>
-
       {/* Messages */}
       <div 
-        className="flex-1 overflow-y-auto px-3 sm:px-4 pt-16 space-y-3 sm:space-y-4 pb-20"
+        className="flex-1 overflow-y-auto px-3 sm:px-4 space-y-3 sm:space-y-4 pb-20" /* Removed pt-16, will be handled by Game.tsx */
         ref={messagesContainerRef}
         onScroll={handleScroll}
       >
@@ -213,7 +195,6 @@ const Chat: React.FC = () => {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onFocus={handleFocus}
               placeholder="Type your message..."
               className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-slate-800/80 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400/50 transition-all duration-200 text-sm"
               maxLength={500}

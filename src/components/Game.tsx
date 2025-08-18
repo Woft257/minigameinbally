@@ -56,62 +56,11 @@ const Game: React.FC = () => {
       </div>
 
       <div className="relative z-10 flex flex-col h-screen">
-        <GameHeader onTabChange={setActiveTab} />
+        <GameHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <div className="flex-1 flex overflow-hidden">
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:flex w-80 flex-col bg-slate-900/90 backdrop-blur-sm border-r border-slate-700/50">
-            <div className="p-4">
-              <nav className="space-y-2">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <motion.button
-                      key={tab.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
-                        activeTab === tab.id
-                          ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-lg shadow-emerald-500/25 transform scale-105'
-                          : 'text-gray-300 hover:text-white hover:bg-slate-800/60 hover:transform hover:scale-102'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span>{tab.label}</span>
-                    </motion.button>
-                  );
-                })}
-              </nav>
-            </div>
-          </div>
-
           {/* Main Content */}
           <div className="flex-1 flex flex-col max-w-full">
-            {/* Mobile Tab Bar */}
-            <div className="lg:hidden bg-slate-900/90 backdrop-blur-sm border-b border-slate-700/50 p-2 sm:p-4">
-              <div className="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <motion.button
-                      key={tab.id}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center space-x-1 sm:space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium whitespace-nowrap text-xs sm:text-sm transition-all duration-300 ${
-                        activeTab === tab.id
-                          ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-md'
-                          : 'text-gray-300 hover:text-white hover:bg-slate-800/60'
-                      }`}
-                    >
-                      <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span>{tab.label}</span>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Content Area */}
             <div className="flex-1 overflow-hidden">
               {activeTab === 'chat' ? (
