@@ -244,14 +244,14 @@ const Login: React.FC = () => {
                         placeholder="Search countries..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2 text-base"
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-400/50 mb-2 text-base"
                       />
                     </div>
                     {filteredCountries.length > 0 ? (
                       filteredCountries.map((c) => (
                         <div
                           key={c}
-                          className="px-4 py-2 text-gray-800 hover:bg-white/10 cursor-pointer transition-colors duration-150 text-base"
+                          className="px-4 py-2 text-gray-200 hover:bg-white/10 cursor-pointer transition-colors duration-150 text-base"
                           onClick={() => {
                             setCountry(c);
                             setSearchTerm(c);
