@@ -22,19 +22,26 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <ChatContainer
-        messages={messages}
-        players={players}
-        currentUserId={currentPlayer?.id}
-        onLoadMore={handleLoadMore}
-        hasMoreMessages={hasMoreMessages}
-        isLoadingMore={isLoadingMore}
-      />
-      <ChatInput
-        onSendMessage={handleSendMessage}
-        disabled={!currentPlayer}
-      />
+    <div className="flex flex-col h-full w-full">
+      {/* Chat Messages Container - Takes remaining space */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <ChatContainer
+          messages={messages}
+          players={players}
+          currentUserId={currentPlayer?.id}
+          onLoadMore={handleLoadMore}
+          hasMoreMessages={hasMoreMessages}
+          isLoadingMore={isLoadingMore}
+        />
+      </div>
+      
+      {/* Chat Input Container - Fixed at bottom */}
+      <div className="flex-shrink-0 w-full">
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          disabled={!currentPlayer}
+        />
+      </div>
     </div>
   );
 };
