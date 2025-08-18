@@ -190,7 +190,7 @@ const Chat: React.FC = () => {
       </div>
 
       {/* Message Input */}
-      <div className="p-3 sm:p-4 border-t border-slate-700/50 bg-slate-900/50 fixed bottom-0 left-0 right-0 w-full z-10">
+      <div className="p-3 sm:p-4 border-t border-slate-700/50 bg-slate-900 fixed bottom-0 left-0 right-0 w-full z-10">
         <form onSubmit={handleSendMessage} className="flex space-x-2 sm:space-x-3">
           <div className="flex-1 relative">
             <input
