@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom'; // Import Link
-import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, UserCheck, UserX, Trophy } from 'lucide-react';
+import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, Trophy } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 import toast from 'react-hot-toast';
 import ReactQuill from 'react-quill'; // Import ReactQuill
@@ -18,15 +18,8 @@ const AdminPanel: React.FC = () => {
     gameState, 
     players, 
     dailyHints,
-    setMysteryPerson,
-    resetMysteryPerson,
     sendMessage, // Import sendMessage
-    revealMysteryPerson // Import revealMysteryPerson
   } = useFirebase();
-
-  const mysteryPerson = useMemo(() => {
-    return players.find(p => p.id === gameState.mysteryPersonId);
-  }, [players, gameState.mysteryPersonId]);
 
 
   const handleAddHint = async (e: React.FormEvent) => {
@@ -275,68 +268,6 @@ const AdminPanel: React.FC = () => {
                   </motion.button>
                 </div>
 
-                {/* Mystery Person Selection */}
-                <div className="p-3 sm:p-4 bg-white/5 rounded-xl">
-                  <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <div>
-                      <h3 className="font-semibold text-white text-base">Mystery Person Selection</h3>
-                      <p className="text-xs sm:text-sm text-gray-400">Select the mystery person for the game</p>
-                    </div>
-                    {mysteryPerson && (
-                      <div className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-400/30">
-                        SET
-                      </div>
-                    )}
-                  </div>
-
-                  {mysteryPerson ? (
-                    <div className="flex items-center justify-between bg-white/10 p-2 sm:p-3 rounded-lg mb-3 sm:mb-4">
-                      <span className="text-white font-medium text-sm">{mysteryPerson.name}</span>
-                      <UserCheck className="w-4 h-4 sm:w-5 h-5 text-green-400" />
-                    </div>
-                  ) : (
-                    <p className="text-gray-400 text-sm mb-3 sm:mb-4">No mystery person selected.</p>
-                  )}
-
-                  <motion.button
-                    onClick={async () => {
-                      if (players.length > 0) {
-                        const randomIndex = Math.floor(Math.random() * players.length);
-                        const randomPlayer = players[randomIndex];
-                        await setMysteryPerson(randomPlayer.id);
-                        toast.success(`Mystery person selected: ${randomPlayer.name}!`);
-                      } else {
-                        toast.error('No players available to select as mystery person.');
-                      }
-                    }}
-                    disabled={players.length === 0}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-base"
-                  >
-                    <div className="flex items-center justify-center space-x-2">
-                      <UserCheck className="w-4 h-4" />
-                      <span>{mysteryPerson ? 'Change Mystery Person' : 'Select Random Mystery Person'}</span>
-                    </div>
-                  </motion.button>
-                  {mysteryPerson && (
-                    <motion.button
-                      onClick={async () => {
-                        await resetMysteryPerson();
-                        toast.success('Mystery person reset!');
-                      }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-base mt-2"
-                    >
-                      <div className="flex items-center justify-center space-x-2">
-                        <UserX className="w-4 h-4" />
-                        <span>Reset Mystery Person</span>
-                      </div>
-                    </motion.button>
-                  )}
-                </div>
-
                 {/* View Mystery Person Vote Results Button */}
                 <Link to="/admin/vote-results">
                   <motion.button
@@ -350,23 +281,6 @@ const AdminPanel: React.FC = () => {
                     </div>
                   </motion.button>
                 </Link>
-
-                {/* Publish Mystery Person Results Button */}
-                <motion.button
-                  onClick={async () => {
-                    await revealMysteryPerson();
-                    await sendMessage('admin-system', 'Game Admin', 'The mystery person has been revealed! Check the results! 🏆');
-                    toast.success('Mystery person revealed!');
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white text-base"
-                >
-                  <div className="flex items-center justify-center space-x-2">
-                    <Trophy className="w-4 h-4" />
-                    <span>Publish Mystery Person Results</span>
-                  </div>
-                </motion.button>
               </div>
 
               {/* King & Queen Game Controls */}

@@ -50,7 +50,6 @@ As an administrator, you have access to tools to manage key game events.
 ### 3.2. Admin Dashboard
 Once logged in, the Admin Dashboard provides specific controls for the game:
 -   **Add Hints**: You can add new daily hints for players to discover.
--   **Open Mysterious Person Vote**: Initiate or manage the voting process for the "Mysterious Person" role.
 -   **Open King & Queen Vote**: Initiate or manage the voting process for the "King & Queen" roles.
 -   **View Vote Results**: Access detailed results for both the "Mysterious Person" and "King & Queen" votes.
 -   **Reset Game Elements**: There might be an option to reset specific game elements or data if needed.
@@ -58,7 +57,6 @@ Once logged in, the Admin Dashboard provides specific controls for the game:
 ### 3.3. Event Finalization
 At the end of the event, administrators can finalize the game:
 -   **End Game**: Access a control panel (often labeled "End Game" or "Event Control Panel") to officially conclude the event.
--   **Publish Results**: Confirming the end of the event will publish the final results to all players.
 -   **Notifications**: The main player homepage will automatically show that the event has ended.
 -   **Top Player Recognition**: A special congratulatory message can be displayed for the top-ranking players.
 -   **Disable Interactions**: Further player registrations or point-earning activities (like QR scans) will be disabled once the event is finalized.
