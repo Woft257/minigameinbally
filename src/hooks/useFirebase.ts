@@ -17,7 +17,7 @@ import { Message, DailyHint, Player, Vote, GameState, KingQueenVote } from '../t
 
 export const useFirebase = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [messagesLimit, setMessagesLimit] = useState(20); // Initial limit for messages
+  const [messagesLimit] = useState(20); // Initial limit for messages
   const [lastVisibleMessage, setLastVisibleMessage] = useState<any>(null); // For pagination
   const [hasMoreMessages, setHasMoreMessages] = useState(true); // To check if there are more messages to load
 

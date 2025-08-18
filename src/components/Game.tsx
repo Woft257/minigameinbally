@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MessageCircle, Lightbulb, Vote, Users, Trophy } from 'lucide-react';
+
 import GameHeader from './GameHeader';
 import Chat from './Chat';
 import DailyHints from './DailyHints';
@@ -12,13 +11,6 @@ import PlayersList from './PlayersList';
 const Game: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
 
-  const tabs = [
-    { id: 'chat', label: 'Chat', icon: MessageCircle },
-    { id: 'hints', label: 'Hints', icon: Lightbulb },
-    { id: 'vote', label: 'Vote', icon: Vote },
-    { id: 'kingQueenVote', label: 'K&Q Vote', icon: Trophy },
-    { id: 'players', label: 'Players', icon: Users }
-  ];
 
   const renderActiveContent = () => {
     switch (activeTab) {
