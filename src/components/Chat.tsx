@@ -14,6 +14,8 @@ const Chat: React.FC = () => {
   const prevScrollHeightRef = useRef<number>(0); // To store previous scroll height
   const prevScrollTopRef = useRef<number>(0); // To store previous scroll top
   const lastMessageIdRef = useRef<string | undefined>(undefined); // To track the ID of the last message
+  const isInitialMountRef = useRef(true); // To track if it's the very first mount of the component
+  const [shouldAdjustScroll, setShouldAdjustScroll] = useState(false); // New state to trigger scroll adjustment
 
   const { messages, players, sendMessage, loadMoreMessages, hasMoreMessages } = useFirebase();
   const { currentPlayer } = usePlayer();
@@ -37,15 +39,14 @@ const Chat: React.FC = () => {
     const container = messagesContainerRef.current;
     if (!container) return;
 
-    // On initial load or when messages are first populated, scroll to bottom instantly
-    // This effect runs after the component mounts and whenever messages change.
-    // The `key` prop on Chat component in Game.tsx ensures this component remounts
-    // when the tab is switched, effectively making this an "initial load" for the chat view.
-    if (messages.length > 0 && container.scrollHeight > container.clientHeight && container.scrollTop === 0) {
-      // Only scroll if there's content to scroll and we are at the very top
-      scrollToBottom('auto');
-      lastMessageIdRef.current = messages[messages.length - 1].id;
-      return;
+    // On initial mount of the component (or when tab is switched and component remounts due to key prop)
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false; // Mark as not initial mount after first render
+      if (messages.length > 0) {
+        scrollToBottom('auto'); // Scroll instantly on initial load if messages exist
+        lastMessageIdRef.current = messages[messages.length - 1].id;
+      }
+      return; // Prevent further logic on initial mount
     }
 
     // If we are currently loading more messages (scrolling up), do NOT auto-scroll to bottom.
@@ -74,18 +75,29 @@ const Chat: React.FC = () => {
 
   }, [messages, isLoadingMore, scrollToBottom]); // Dependencies: messages, isLoadingMore, scrollToBottom
 
+  // useLayoutEffect to adjust scroll position after loading more messages
+  useLayoutEffect(() => {
+    if (shouldAdjustScroll && messagesContainerRef.current) {
+      const container = messagesContainerRef.current;
+      const newScrollHeight = container.scrollHeight;
+      const heightAdded = newScrollHeight - prevScrollHeightRef.current;
+      container.scrollTop = prevScrollTopRef.current + heightAdded; // Adjust scroll by the height of newly added content
+      setShouldAdjustScroll(false); // Reset the flag
+    }
+  }, [shouldAdjustScroll, messages]); // Depend on messages to ensure it runs after messages update
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleScroll = async () => {
     if (messagesContainerRef.current && messagesContainerRef.current.scrollTop === 0 && hasMoreMessages && !isLoadingMore) {
       setIsLoadingMore(true);
-      const oldScrollHeight = messagesContainerRef.current.scrollHeight;
+      // Capture current scroll state before loading more
+      prevScrollHeightRef.current = messagesContainerRef.current.scrollHeight;
+      prevScrollTopRef.current = messagesContainerRef.current.scrollTop;
+
       await loadMoreMessages();
-      // After loading more messages, maintain scroll position
-      if (messagesContainerRef.current) {
-        const newScrollHeight = messagesContainerRef.current.scrollHeight;
-        messagesContainerRef.current.scrollTop = newScrollHeight - oldScrollHeight;
-      }
+      // After loading more messages, signal that scroll adjustment is needed
+      setShouldAdjustScroll(true); // Trigger useLayoutEffect
       setIsLoadingMore(false);
     }
   };
