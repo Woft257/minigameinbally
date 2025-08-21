@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Palmtree, Users, Bell, MessageCircle, Lightbulb, Vote, Trophy } from 'lucide-react';
+import { Palmtree, Users, Bell, MessageCircle, Lightbulb, Vote, Trophy, User } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useFirebase } from '../hooks/useFirebase';
 
@@ -28,7 +28,8 @@ const GameHeader: React.FC<GameHeaderProps> = ({ activeTab, setActiveTab }) => {
     { id: 'hints', label: 'Hints', icon: Lightbulb },
     { id: 'vote', label: 'Vote', icon: Vote },
     { id: 'kingQueenVote', label: 'K&Q Vote', icon: Trophy },
-    { id: 'players', label: 'Players', icon: Users }
+    { id: 'players', label: 'Players', icon: Users },
+    { id: 'changeName', label: 'Change Name', icon: User } // New tab for changing name
   ];
 
   return (

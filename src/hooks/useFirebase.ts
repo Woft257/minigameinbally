@@ -5,21 +5,22 @@ import {
   onSnapshot, 
   query, 
   orderBy, 
-  limit, // Re-add limit
-  startAfter, // Add startAfter for pagination
+  limit,
+  startAfter,
   doc,
   setDoc,
-  getDocs, // Import getDocs
-  writeBatch // Import writeBatch
+  getDocs,
+  writeBatch,
+  where // Import where
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Message, DailyHint, Player, Vote, GameState, KingQueenVote } from '../types';
 
 export const useFirebase = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [messagesLimit] = useState(20); // Initial limit for messages
-  const [lastVisibleMessage, setLastVisibleMessage] = useState<any>(null); // For pagination
-  const [hasMoreMessages, setHasMoreMessages] = useState(true); // To check if there are more messages to load
+  const [messagesLimit] = useState(20);
+  const [lastVisibleMessage, setLastVisibleMessage] = useState<unknown>(null);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
 
   const [players, setPlayers] = useState<Player[]>([]);
   const [dailyHints, setDailyHints] = useState<DailyHint[]>([]);
@@ -27,17 +28,17 @@ export const useFirebase = () => {
   const [kingQueenVotes, setKingQueenVotes] = useState<KingQueenVote[]>([]);
   const [gameState, setGameState] = useState<GameState>({
     isVotingOpen: false,
-    isKingQueenVotingOpen: false, // New state for King & Queen voting
+    isKingQueenVotingOpen: false,
     gameStarted: false,
     mysteryPersonRevealed: false,
-    mysteryPersonId: null // Initialize mysteryPersonId
+    mysteryPersonId: null
   });
 
   // Listen to messages with pagination
   useEffect(() => {
-    let q = query(
+    const q = query(
       collection(db, 'messages'),
-      orderBy('timestamp', 'desc'), // Order by descending timestamp for latest messages first
+      orderBy('timestamp', 'desc'),
       limit(messagesLimit)
     );
 
@@ -61,7 +62,7 @@ export const useFirebase = () => {
         }
       }) as Message[];
       
-      setMessages(newMessagesData.reverse()); // Reverse to display oldest at top, newest at bottom
+      setMessages(newMessagesData.reverse());
       setLastVisibleMessage(snapshot.docs[snapshot.docs.length - 1]);
       setHasMoreMessages(newMessagesData.length === messagesLimit);
     });
@@ -76,7 +77,7 @@ export const useFirebase = () => {
       collection(db, 'messages'),
       orderBy('timestamp', 'desc'),
       startAfter(lastVisibleMessage),
-      limit(20) // Load 20 more messages
+      limit(20)
     );
 
     getDocs(q).then((snapshot) => {
@@ -132,13 +133,10 @@ export const useFirebase = () => {
         let parsedCreatedAt: Date;
 
         if (rawCreatedAt && typeof rawCreatedAt.toDate === 'function') {
-          // It's a Firestore Timestamp object
           parsedCreatedAt = rawCreatedAt.toDate();
         } else if (typeof rawCreatedAt === 'string') {
-          // It's an ISO string
           parsedCreatedAt = new Date(rawCreatedAt);
         } else {
-          // Fallback for missing or unrecognised format
           parsedCreatedAt = new Date(); 
         }
 
@@ -178,13 +176,10 @@ export const useFirebase = () => {
         let parsedTimestamp: Date;
 
         if (rawTimestamp && typeof rawTimestamp.toDate === 'function') {
-          // It's a Firestore Timestamp object
           parsedTimestamp = rawTimestamp.toDate();
         } else if (typeof rawTimestamp === 'string') {
-          // It's an ISO string
           parsedTimestamp = new Date(rawTimestamp);
         } else {
-          // Fallback for missing or unrecognised format
           parsedTimestamp = new Date(); 
         }
 
@@ -236,7 +231,7 @@ export const useFirebase = () => {
       playerId,
       playerName,
       content,
-      timestamp: new Date().toISOString() // Store as ISO string
+      timestamp: new Date().toISOString()
     });
   };
 
@@ -250,11 +245,36 @@ export const useFirebase = () => {
     return docRef.id;
   };
 
+  // New function to update player name in Firebase and messages
+  const updatePlayerNameInFirebase = async (playerId: string, newName: string) => {
+    const batch = writeBatch(db);
+
+    // 1. Update player document
+    const playerRef = doc(db, 'players', playerId);
+    batch.update(playerRef, { name: newName });
+
+    // 2. Update player name in all their messages
+    const messagesQuery = query(collection(db, 'messages'), where('playerId', '==', playerId));
+    const messagesSnapshot = await getDocs(messagesQuery);
+    messagesSnapshot.docs.forEach((msgDoc) => {
+      batch.update(msgDoc.ref, { playerName: newName });
+    });
+
+    await batch.commit();
+  };
+
+  // New function to check if player name already exists
+  const checkPlayerNameExists = async (name: string): Promise<boolean> => {
+    const q = query(collection(db, 'players'), where('name', '==', name));
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  };
+
   const addDailyHint = async (content: string, imageUrl?: string | null) => {
     await addDoc(collection(db, 'dailyHints'), {
       content,
       imageUrl,
-      createdAt: new Date().toISOString(), // Store as ISO string
+      createdAt: new Date().toISOString(),
       isActive: true
     });
   };
@@ -274,7 +294,7 @@ export const useFirebase = () => {
       playerId,
       voterName,
       suspectedPersonName,
-      timestamp: new Date().toISOString() // Store as ISO string
+      timestamp: new Date().toISOString()
     });
   };
 
@@ -332,6 +352,8 @@ export const useFirebase = () => {
     gameState,
     sendMessage,
     addPlayer,
+    updatePlayerNameInFirebase, // Expose new function
+    checkPlayerNameExists, // Expose new function
     addDailyHint,
     updateGameState,
     submitVote,
@@ -341,7 +363,7 @@ export const useFirebase = () => {
     revealMysteryPerson,
     resetAllData,
     markHintAsRead,
-    loadMoreMessages, // Expose loadMoreMessages
-    hasMoreMessages // Expose hasMoreMessages
+    loadMoreMessages,
+    hasMoreMessages
   };
 };

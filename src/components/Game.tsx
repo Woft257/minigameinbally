@@ -7,6 +7,7 @@ import DailyHints from './DailyHints';
 import VotingPanel from './VotingPanel';
 import KingQueenVotingPanel from './KingQueenVotingPanel';
 import PlayersList from './PlayersList';
+import ChangeNamePanel from './ChangeNamePanel'; // Import ChangeNamePanel
 
 const Game: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
@@ -24,6 +25,8 @@ const Game: React.FC = () => {
         return <KingQueenVotingPanel />;
       case 'players':
         return <PlayersList />;
+      case 'changeName': // New case for ChangeNamePanel
+        return <ChangeNamePanel />;
       default:
         return <Chat />;
     }

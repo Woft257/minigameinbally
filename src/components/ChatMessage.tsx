@@ -1,15 +1,18 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Message } from '../types';
+import { Message, Player } from '../types'; // Import Player type
 
 interface ChatMessageProps {
   message: Message;
   isCurrentUser: boolean;
-  country?: string;
+  player?: Player; // Pass the full player object
   index: number;
 }
 
-const ChatMessage = memo(({ message, isCurrentUser, country, index }: ChatMessageProps) => {
+const ChatMessage = memo(({ message, isCurrentUser, player, index }: ChatMessageProps) => {
+  const displayName = player?.name || message.playerName; // Use player name if available, otherwise message name
+  const displayCountry = player?.country;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -32,15 +35,15 @@ const ChatMessage = memo(({ message, isCurrentUser, country, index }: ChatMessag
             transition={{ delay: Math.min(index * 0.02, 0.2) + 0.1 }}
             className="flex items-center space-x-2 mb-1 ml-1"
           >
-            <span className="text-sm font-medium text-emerald-400">{message.playerName}</span>
-            {country && (
+            <span className="text-sm font-medium text-emerald-400">{displayName}</span>
+            {displayCountry && (
               <motion.span 
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: Math.min(index * 0.02, 0.2) + 0.2, type: "spring" }}
                 className="text-xs text-white bg-cyan-500/30 px-2 py-0.5 rounded-full border border-cyan-400/50"
               >
-                {country}
+                {displayCountry}
               </motion.span>
             )}
           </motion.div>

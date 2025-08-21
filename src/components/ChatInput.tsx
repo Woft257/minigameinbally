@@ -13,9 +13,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
   const [isTyping, setIsTyping] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastSentTime = useRef(0);
-  const messageCount = useRef(0);
-  const resetCountTimeout = useRef<NodeJS.Timeout>();
 
   // Handle mobile keyboard visibility
   useEffect(() => {
@@ -49,36 +46,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
     }, 100);
   }, []);
 
-  // Rate limiting: max 5 messages per 10 seconds
-  const isRateLimited = useCallback(() => {
-    const now = Date.now();
-    const timeDiff = now - lastSentTime.current;
-    
-    // Reset counter every 10 seconds
-    if (timeDiff > 10000) {
-      messageCount.current = 0;
-    }
-    
-    // Check if exceeded rate limit
-    if (messageCount.current >= 5 && timeDiff < 10000) {
-      return true;
-    }
-    
-    return false;
-  }, []);
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || isTyping) return;
 
     if (message.length > 500) {
       toast.error('Message too long! Maximum 500 characters.');
-      return;
-    }
-
-    // Rate limiting check
-    if (isRateLimited()) {
-      toast.error('Too many messages! Please wait a moment.');
       return;
     }
 
@@ -89,18 +62,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
     try {
       await onSendMessage(messageToSend);
       
-      // Update rate limiting counters
-      lastSentTime.current = Date.now();
-      messageCount.current += 1;
-      
-      // Auto-reset counter after 10 seconds
-      if (resetCountTimeout.current) {
-        clearTimeout(resetCountTimeout.current);
-      }
-      resetCountTimeout.current = setTimeout(() => {
-        messageCount.current = 0;
-      }, 10000);
-
       // Ensure input stays visible after sending
       ensureInputVisible();
       
@@ -111,7 +72,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
     } finally {
       setIsTyping(false);
     }
-  }, [message, isTyping, onSendMessage, isRateLimited, ensureInputVisible]);
+  }, [message, isTyping, onSendMessage, ensureInputVisible]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);

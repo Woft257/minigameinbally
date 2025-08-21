@@ -2,11 +2,11 @@ import React, { useRef, useEffect, useCallback, useState, useMemo } from 'react'
 import { Loader2, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
-import { Message } from '../types';
+import { Message, Player } from '../types'; // Import Player type
 
 interface ChatContainerProps {
   messages: Message[];
-  players: any[];
+  players: Player[];
   currentUserId?: string;
   onLoadMore: () => Promise<void>;
   hasMoreMessages: boolean;
@@ -80,28 +80,23 @@ const ChatContainer: React.FC<ChatContainerProps> = React.memo(({
     }
   }, [hasMoreMessages, isLoadingMore, onLoadMore]);
 
-  const getPlayerCountry = useCallback((playerName: string) => {
-    const player = players.find(p => p.name === playerName);
-    return player?.country;
-  }, [players]);
-
   // Memoize rendered messages for better performance
   const renderedMessages = useMemo(() => {
     return messages.map((msg, index) => {
       const isCurrentUser = msg.playerId === currentUserId;
-      const country = getPlayerCountry(msg.playerName);
+      const player = players.find(p => p.id === msg.playerId); // Find the player object
       
       return (
         <ChatMessage
           key={msg.id}
           message={msg}
           isCurrentUser={isCurrentUser}
-          country={country}
+          player={player} // Pass the full player object
           index={index}
         />
       );
     });
-  }, [messages, currentUserId, getPlayerCountry]);
+  }, [messages, currentUserId, players]); // Add players to dependency array
 
   return (
     <div className="h-full w-full flex flex-col">

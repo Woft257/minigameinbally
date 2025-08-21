@@ -4,6 +4,7 @@ import { Player } from '../types';
 interface PlayerContextType {
   currentPlayer: Player | null;
   setCurrentPlayer: (player: Player | null) => void;
+  updatePlayerName: (newName: string) => void; // Add this line
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -23,10 +24,23 @@ export const PlayerProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
+  // New function to update player name
+  const updatePlayerName = (newName: string) => {
+    setCurrentPlayer(prevPlayer => {
+      if (prevPlayer) {
+        const updatedPlayer = { ...prevPlayer, name: newName };
+        localStorage.setItem('mexc-player', JSON.stringify(updatedPlayer));
+        return updatedPlayer;
+      }
+      return prevPlayer;
+    });
+  };
+
   return (
     <PlayerContext.Provider value={{ 
       currentPlayer, 
-      setCurrentPlayer: setPlayerWithStorage 
+      setCurrentPlayer: setPlayerWithStorage,
+      updatePlayerName // Add this line
     }}>
       {children}
     </PlayerContext.Provider>
