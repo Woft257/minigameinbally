@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart2, ArrowLeft } from 'lucide-react';
+import { BarChart2, ArrowLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Vote } from '../types';
 
@@ -9,6 +9,9 @@ interface VoteResultsProps {
 }
 
 const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
+  const [showVoterList, setShowVoterList] = useState(false);
+  const [selectedSuspectedPerson, setSelectedSuspectedPerson] = useState<string | null>(null);
+
   // Calculate vote counts for each suspected person
   const voteCounts = useMemo(() => {
     const counts: { [key: string]: number } = {};
@@ -22,6 +25,23 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
   }, [votes]);
 
   const totalVotes = votes.length;
+
+  const handleShowVoters = (personName: string) => {
+    setSelectedSuspectedPerson(personName);
+    setShowVoterList(true);
+  };
+
+  const handleBackToResults = () => {
+    setShowVoterList(false);
+    setSelectedSuspectedPerson(null);
+  };
+
+  const votersForSelectedPerson = useMemo(() => {
+    if (!selectedSuspectedPerson) return [];
+    return votes
+      .filter(vote => vote.suspectedPersonName === selectedSuspectedPerson)
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()); // Sort by timestamp
+  }, [votes, selectedSuspectedPerson]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-4">
@@ -66,18 +86,55 @@ const VoteResults: React.FC<VoteResultsProps> = ({ votes }) => {
           {totalVotes === 0 ? (
             <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No votes cast yet.</p>
           ) : (
-            <div className="space-y-3 sm:space-y-4">
-              <p className="text-white text-lg font-semibold mb-4">Total Votes: {totalVotes}</p>
-              {voteCounts.map((result) => (
-                <div key={result.name} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-white font-medium text-base sm:text-lg">{result.name}</span>
-                    <span className="text-blue-300 text-xs sm:text-sm">{result.count} votes</span>
-                  </div>
-                  <div className="w-24 h-2 bg-blue-600 rounded-full" style={{ width: `${(result.count / totalVotes) * 100}%` }}></div>
+            <>
+              {!showVoterList ? (
+                <div className="space-y-3 sm:space-y-4">
+                  <p className="text-white text-lg font-semibold mb-4">Total Votes: {totalVotes}</p>
+                  {voteCounts.map((result) => (
+                    <div key={result.name} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-white font-medium text-base sm:text-lg">{result.name}</span>
+                        <span className="text-blue-300 text-xs sm:text-sm">{result.count} votes</span>
+                      </div>
+                      <button
+                        onClick={() => handleShowVoters(result.name)}
+                        className="p-1 rounded-full hover:bg-white/20 transition-colors duration-200"
+                        aria-label={`Show voters for ${result.name}`}
+                      >
+                        <ChevronRight className="w-5 h-5 text-white" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              ) : (
+                <div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleBackToResults}
+                    className="flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-colors duration-200 mb-4"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back to Vote Results</span>
+                  </motion.button>
+                  <h2 className="text-white text-xl font-semibold mb-4">Voters for {selectedSuspectedPerson}</h2>
+                  {votersForSelectedPerson.length === 0 ? (
+                    <p className="text-gray-400 text-center py-4 text-sm sm:text-base">No voters found for this person.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {votersForSelectedPerson.map((vote) => (
+                        <div key={vote.id} className="flex items-center justify-between bg-white/10 p-3 rounded-lg">
+                          <span className="text-white font-medium">{vote.voterName}</span>
+                          <span className="text-gray-400 text-sm">
+                            {new Date(vote.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </motion.div>
       </div>
