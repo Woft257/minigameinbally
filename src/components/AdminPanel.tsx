@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom'; // Import Link
-import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, Trophy } from 'lucide-react';
+import { Settings, Plus, Send, Users, Vote as VoteIcon, Eye, EyeOff, Trophy, Trash2 } from 'lucide-react';
 import { useFirebase } from '../hooks/useFirebase';
 import toast from 'react-hot-toast';
 import ReactQuill from 'react-quill'; // Import ReactQuill
@@ -347,6 +347,20 @@ const AdminPanel: React.FC = () => {
                     <div className="flex items-center justify-center space-x-2">
                       <Trophy className="w-4 h-4" />
                       <span>View King & Queen Results</span>
+                    </div>
+                  </motion.button>
+                </Link>
+
+                {/* Delete Player Button */}
+                <Link to="/admin/delete-player">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-2 sm:py-3 px-4 sm:px-6 font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white text-base"
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete Player</span>
                     </div>
                   </motion.button>
                 </Link>

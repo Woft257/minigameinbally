@@ -9,6 +9,7 @@ import VoteResults from './components/VoteResults';
 import KingQueenVoteResults from './components/KingQueenVoteResults';
 import VoteDetails from './components/VoteDetails';
 import ResetPanel from './components/ResetPanel';
+import DeletePlayerPanel from './components/DeletePlayerPanel'; // Import DeletePlayerPanel
 import AdminAuth from './components/AdminAuth'; // Import AdminAuth
 import { useFirebase } from './hooks/useFirebase';
 
@@ -42,6 +43,7 @@ const AdminRoutes: React.FC<{ votes: any[] }> = ({ votes }) => (
     <Route path="/vote-results/:sessionKey" element={<VoteDetails allVotes={votes} />} />
     <Route path="/king-queen-vote-results" element={<KingQueenVoteResults />} />
     <Route path="/reset" element={<ResetPanel />} />
+    <Route path="/delete-player" element={<DeletePlayerPanel />} /> {/* New route for DeletePlayerPanel */}
   </Routes>
 );
 

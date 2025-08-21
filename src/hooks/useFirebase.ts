@@ -343,6 +343,43 @@ export const useFirebase = () => {
     });
   };
 
+  const deletePlayer = async (playerUid: string) => {
+    const batch = writeBatch(db);
+
+    // 1. Delete player document
+    const playerRef = doc(db, 'players', playerUid);
+    batch.delete(playerRef);
+
+    // 2. Delete all messages by this player
+    const messagesQuery = query(collection(db, 'messages'), where('playerId', '==', playerUid));
+    const messagesSnapshot = await getDocs(messagesQuery);
+    messagesSnapshot.docs.forEach((msgDoc) => {
+      batch.delete(msgDoc.ref);
+    });
+
+    // 3. Delete all votes cast by this player
+    const votesQuery = query(collection(db, 'votes'), where('playerId', '==', playerUid));
+    const votesSnapshot = await getDocs(votesQuery);
+    votesSnapshot.docs.forEach((voteDoc) => {
+      batch.delete(voteDoc.ref);
+    });
+
+    // 4. Delete all King & Queen votes cast by this player
+    const kqVotesQuery = query(collection(db, 'kingQueenVotes'), where('playerId', '==', playerUid));
+    const kqVotesSnapshot = await getDocs(kqVotesQuery);
+    kqVotesSnapshot.docs.forEach((kqVoteDoc) => {
+      batch.delete(kqVoteDoc.ref);
+    });
+
+    // 5. If the deleted player was the mystery person, reset mysteryPersonId
+    if (gameState.mysteryPersonId === playerUid) {
+      const gameStateDoc = doc(db, 'gameState', 'current');
+      batch.update(gameStateDoc, { mysteryPersonId: null, mysteryPersonRevealed: false });
+    }
+
+    await batch.commit();
+  };
+
   return {
     messages,
     players,
@@ -362,6 +399,7 @@ export const useFirebase = () => {
     resetMysteryPerson,
     revealMysteryPerson,
     resetAllData,
+    deletePlayer, // Expose new function
     markHintAsRead,
     loadMoreMessages,
     hasMoreMessages

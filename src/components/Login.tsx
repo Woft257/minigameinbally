@@ -71,11 +71,6 @@ const Login: React.FC = () => {
       return;
     }
 
-    if (players.length >= 40) {
-      toast.error('Game is full! Maximum 40 players allowed.');
-      return;
-    }
-
     if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
       toast.error('Name already taken! Please choose a different name.');
       return;
